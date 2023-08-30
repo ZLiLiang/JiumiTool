@@ -1,12 +1,11 @@
-﻿using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Z.Tools.BLL;
-using static System.Net.WebRequestMethods;
+using Z.Tools.Common;
+using Z.Tools.Extensions;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 
 namespace Z.Tools
@@ -21,7 +20,7 @@ namespace Z.Tools
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            pathTB.Text = "拖拽文件";
+            pathTB.Text = "拖拽文件夹（仅支持单个文件夹）";
             pathTB.ForeColor = Color.Gray;
 
             rPMenuItem.Checked = true;
@@ -173,11 +172,11 @@ namespace Z.Tools
             {
                 if (isFile == true)
                 {
-                    ChangeFiles();
+                    ChangeFiles(); //修改文件
                 }
                 else
                 {
-                    ChangeFolders();
+                    ChangeFolders(); //修改文件夹
                 }
             }
             catch (Exception ex)
@@ -242,7 +241,7 @@ namespace Z.Tools
         private void ChangeFiles()
         {
             msgLB.Items.Clear();
-            FileInfo[] files = FileTools.GetFiles(pathTB.Text); //根据路径获取路径下的文件
+            FileInfo[] files = FileTools.GetFiles(pathTB.Text.GetPath()); //根据路径获取路径下的文件
             if (isBackUp.CheckState == CheckState.Checked)
             {
                 string backUpPath = FileTools.CreateBackUp(files);
@@ -263,8 +262,7 @@ namespace Z.Tools
         private void ChangeFolders()
         {
             msgLB.Items.Clear();
-            //TODO 存在无法解析字符串的bug，多选文件夹情况下
-            DirectoryInfo[] folders = FileTools.GetFolders(pathTB.Text); //根据路径获取路径下的文件夹
+            DirectoryInfo[] folders = FileTools.GetFolders(pathTB.Text.GetPath()); //根据路径获取路径下的文件夹
             if (isBackUp.CheckState == CheckState.Checked)
             {
                 string backUpPath = FileTools.CreateBackUp(folders);

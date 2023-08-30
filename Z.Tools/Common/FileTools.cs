@@ -182,7 +182,7 @@ namespace Z.Tools.Common
         {
             foreach (var folder in folders)
             {
-                if (folder.Name == "备份") continue;
+                if (folder.Name == "备份") continue; //跳过名为备份的文件夹
                 DirectoryInfo copyDirectory = new DirectoryInfo(Path.Combine(destinationDir, folder.Name)); //拼接路径不同父文件夹的同名文件夹
                 if (copyDirectory.Exists == false) copyDirectory.Create(); //创建要拷贝的目录
                 foreach (var file in folder.GetFiles())

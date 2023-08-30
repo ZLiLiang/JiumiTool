@@ -58,7 +58,8 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BLL\FileTools.cs" />
+    <Compile Include="Common\FileTools.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
