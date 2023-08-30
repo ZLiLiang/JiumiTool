@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Z.Tools.Common;
 using Z.Tools.Extensions;
@@ -58,6 +59,7 @@ namespace Z.Tools
             {
                 //在此处获取文件路径  或者文件夹的路径
                 string tempStr = ((Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+                //string tempStr = string.Join(",", ((string[])e.Data.GetData(DataFormats.FileDrop))); //支持多文件拖拽
 
                 pathTB.Text = tempStr;
                 FileInfo[] files = FileTools.GetFiles(tempStr);
