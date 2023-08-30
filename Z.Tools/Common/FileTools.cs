@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Z.Tools.BLL
+namespace Z.Tools.Common
 {
     public static class FileTools
     {
@@ -182,6 +182,7 @@ namespace Z.Tools.BLL
         {
             foreach (var folder in folders)
             {
+                if (folder.Name == "备份") continue;
                 DirectoryInfo copyDirectory = new DirectoryInfo(Path.Combine(destinationDir, folder.Name)); //拼接路径不同父文件夹的同名文件夹
                 if (copyDirectory.Exists == false) copyDirectory.Create(); //创建要拷贝的目录
                 foreach (var file in folder.GetFiles())
