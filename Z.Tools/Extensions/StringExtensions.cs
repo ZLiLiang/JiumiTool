@@ -1,4 +1,6 @@
-﻿namespace Z.Tools.Extensions
+﻿using System.IO;
+
+namespace Z.Tools.Extensions
 {
     public static class StringExtensions
     {

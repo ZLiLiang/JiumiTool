@@ -34,12 +34,11 @@
             this.rPLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.tipL = new System.Windows.Forms.Label();
             this.pathTB = new System.Windows.Forms.TextBox();
-            this.selectFileBtn = new System.Windows.Forms.Button();
+            this.selectResourceBtn = new System.Windows.Forms.Button();
             this.msgLB = new System.Windows.Forms.ListBox();
             this.isBackUp = new System.Windows.Forms.CheckBox();
             this.changeBtn = new System.Windows.Forms.Button();
             this.clearBtn = new System.Windows.Forms.Button();
-            this.selectFolderBtn = new System.Windows.Forms.Button();
             this.menu.SuspendLayout();
             this.rPLayoutPanel.SuspendLayout();
             this.SuspendLayout();
@@ -72,19 +71,17 @@
             // 
             // rPLayoutPanel
             // 
-            this.rPLayoutPanel.ColumnCount = 4;
+            this.rPLayoutPanel.ColumnCount = 3;
             this.rPLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15.44118F));
             this.rPLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 84.55882F));
-            this.rPLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.rPLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 104F));
+            this.rPLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
             this.rPLayoutPanel.Controls.Add(this.tipL, 0, 0);
             this.rPLayoutPanel.Controls.Add(this.pathTB, 1, 0);
-            this.rPLayoutPanel.Controls.Add(this.selectFileBtn, 2, 0);
+            this.rPLayoutPanel.Controls.Add(this.selectResourceBtn, 2, 0);
             this.rPLayoutPanel.Controls.Add(this.msgLB, 0, 1);
             this.rPLayoutPanel.Controls.Add(this.isBackUp, 2, 2);
             this.rPLayoutPanel.Controls.Add(this.changeBtn, 2, 3);
             this.rPLayoutPanel.Controls.Add(this.clearBtn, 2, 4);
-            this.rPLayoutPanel.Controls.Add(this.selectFolderBtn, 3, 0);
             this.rPLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rPLayoutPanel.Location = new System.Drawing.Point(0, 28);
             this.rPLayoutPanel.Name = "rPLayoutPanel";
@@ -104,7 +101,7 @@
             this.tipL.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tipL.Location = new System.Drawing.Point(3, 0);
             this.tipL.Name = "tipL";
-            this.tipL.Size = new System.Drawing.Size(83, 30);
+            this.tipL.Size = new System.Drawing.Size(96, 30);
             this.tipL.TabIndex = 1;
             this.tipL.Text = "文件位置:";
             this.tipL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -113,25 +110,25 @@
             // 
             this.pathTB.AllowDrop = true;
             this.pathTB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pathTB.Location = new System.Drawing.Point(92, 3);
+            this.pathTB.Location = new System.Drawing.Point(105, 3);
             this.pathTB.Name = "pathTB";
-            this.pathTB.Size = new System.Drawing.Size(482, 25);
+            this.pathTB.Size = new System.Drawing.Size(553, 25);
             this.pathTB.TabIndex = 3;
             this.pathTB.DragDrop += new System.Windows.Forms.DragEventHandler(this.pathTB_DragDrop);
             this.pathTB.DragEnter += new System.Windows.Forms.DragEventHandler(this.pathTB_DragEnter);
             this.pathTB.Enter += new System.EventHandler(this.pathTB_Enter);
             this.pathTB.Leave += new System.EventHandler(this.pathTB_Leave);
             // 
-            // selectFileBtn
+            // selectResourceBtn
             // 
-            this.selectFileBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.selectFileBtn.Location = new System.Drawing.Point(580, 3);
-            this.selectFileBtn.Name = "selectFileBtn";
-            this.selectFileBtn.Size = new System.Drawing.Size(94, 24);
-            this.selectFileBtn.TabIndex = 2;
-            this.selectFileBtn.Text = "选择文件";
-            this.selectFileBtn.UseVisualStyleBackColor = true;
-            this.selectFileBtn.Click += new System.EventHandler(this.selectFileBtn_Click);
+            this.selectResourceBtn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.selectResourceBtn.Location = new System.Drawing.Point(664, 3);
+            this.selectResourceBtn.Name = "selectResourceBtn";
+            this.selectResourceBtn.Size = new System.Drawing.Size(115, 24);
+            this.selectResourceBtn.TabIndex = 2;
+            this.selectResourceBtn.Text = "选择文件(夹)";
+            this.selectResourceBtn.UseVisualStyleBackColor = true;
+            this.selectResourceBtn.Click += new System.EventHandler(this.selectFileBtn_Click);
             // 
             // msgLB
             // 
@@ -142,30 +139,28 @@
             this.msgLB.Location = new System.Drawing.Point(3, 33);
             this.msgLB.Name = "msgLB";
             this.rPLayoutPanel.SetRowSpan(this.msgLB, 5);
-            this.msgLB.Size = new System.Drawing.Size(571, 389);
+            this.msgLB.Size = new System.Drawing.Size(655, 389);
             this.msgLB.TabIndex = 3;
             // 
             // isBackUp
             // 
             this.isBackUp.AutoSize = true;
-            this.rPLayoutPanel.SetColumnSpan(this.isBackUp, 2);
             this.isBackUp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.isBackUp.Location = new System.Drawing.Point(584, 103);
+            this.isBackUp.Location = new System.Drawing.Point(668, 103);
             this.isBackUp.Margin = new System.Windows.Forms.Padding(7, 3, 3, 3);
             this.isBackUp.Name = "isBackUp";
-            this.isBackUp.Size = new System.Drawing.Size(195, 24);
+            this.isBackUp.Size = new System.Drawing.Size(111, 24);
             this.isBackUp.TabIndex = 4;
             this.isBackUp.Text = "对原文件备份";
             this.isBackUp.UseVisualStyleBackColor = true;
             // 
             // changeBtn
             // 
-            this.rPLayoutPanel.SetColumnSpan(this.changeBtn, 2);
             this.changeBtn.Dock = System.Windows.Forms.DockStyle.Fill;
             this.changeBtn.Enabled = false;
-            this.changeBtn.Location = new System.Drawing.Point(580, 133);
+            this.changeBtn.Location = new System.Drawing.Point(664, 133);
             this.changeBtn.Name = "changeBtn";
-            this.changeBtn.Size = new System.Drawing.Size(199, 24);
+            this.changeBtn.Size = new System.Drawing.Size(115, 24);
             this.changeBtn.TabIndex = 5;
             this.changeBtn.Text = "修改";
             this.changeBtn.UseVisualStyleBackColor = true;
@@ -173,26 +168,14 @@
             // 
             // clearBtn
             // 
-            this.rPLayoutPanel.SetColumnSpan(this.clearBtn, 2);
             this.clearBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.clearBtn.Location = new System.Drawing.Point(580, 163);
+            this.clearBtn.Location = new System.Drawing.Point(664, 163);
             this.clearBtn.Name = "clearBtn";
-            this.clearBtn.Size = new System.Drawing.Size(199, 24);
+            this.clearBtn.Size = new System.Drawing.Size(115, 24);
             this.clearBtn.TabIndex = 6;
             this.clearBtn.Text = "清除";
             this.clearBtn.UseVisualStyleBackColor = true;
             this.clearBtn.Click += new System.EventHandler(this.clearBtn_Click);
-            // 
-            // selectFolderBtn
-            // 
-            this.selectFolderBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.selectFolderBtn.Location = new System.Drawing.Point(680, 3);
-            this.selectFolderBtn.Name = "selectFolderBtn";
-            this.selectFolderBtn.Size = new System.Drawing.Size(99, 24);
-            this.selectFolderBtn.TabIndex = 7;
-            this.selectFolderBtn.Text = "选择文件夹";
-            this.selectFolderBtn.UseVisualStyleBackColor = true;
-            this.selectFolderBtn.Click += new System.EventHandler(this.selectFolderBtn_Click);
             // 
             // MainForm
             // 
@@ -224,12 +207,11 @@
         private System.Windows.Forms.TableLayoutPanel rPLayoutPanel;
         private System.Windows.Forms.Label tipL;
         private System.Windows.Forms.TextBox pathTB;
-        private System.Windows.Forms.Button selectFileBtn;
+        private System.Windows.Forms.Button selectResourceBtn;
         private System.Windows.Forms.ListBox msgLB;
         private System.Windows.Forms.CheckBox isBackUp;
         private System.Windows.Forms.Button changeBtn;
         private System.Windows.Forms.Button clearBtn;
-        private System.Windows.Forms.Button selectFolderBtn;
     }
 }
 

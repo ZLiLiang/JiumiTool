@@ -14,6 +14,8 @@ namespace Z.Tools
     public partial class MainForm : Form
     {
         private bool isFile = true;
+        private List<string> files = new List<string>();
+        private List<string> folders = new List<string>();
         public MainForm()
         {
             InitializeComponent();
@@ -58,18 +60,21 @@ namespace Z.Tools
             try
             {
                 //在此处获取文件路径  或者文件夹的路径
-                string tempStr = ((Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
-                //string tempStr = string.Join(",", ((string[])e.Data.GetData(DataFormats.FileDrop))); //支持多文件拖拽
+                //string tempStr = ((Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
+                string[] tempStr = ((string[])e.Data.GetData(DataFormats.FileDrop)); //支持多文件拖拽
 
-                pathTB.Text = tempStr;
-                FileInfo[] files = FileTools.GetFiles(tempStr);
-                foreach (var file in files)
-                {
-                    msgLB.Items.Add(file.Name);
-                }
-                changeBtn.Enabled = true;
-                pathTB.ForeColor = Color.Black;
-                isFile = true;
+                pathTB.Text = string.Join(",", tempStr);
+                
+
+                //pathTB.Text = tempStr;
+                //FileInfo[] files = FileTools.GetFiles(tempStr);
+                //foreach (var file in files)
+                //{
+                //    msgLB.Items.Add(file.Name);
+                //}
+                //changeBtn.Enabled = true;
+                //pathTB.ForeColor = Color.Black;
+                //isFile = true;
             }
             catch (Exception ex)
             {

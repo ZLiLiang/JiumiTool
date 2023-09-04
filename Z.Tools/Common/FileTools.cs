@@ -46,6 +46,7 @@ namespace Z.Tools.Common
             DirectoryInfo[] folders = directory.GetDirectories();
             return folders;
         }
+
         /// <summary>
         /// 获取多个路径的文件夹
         /// </summary>
@@ -60,6 +61,23 @@ namespace Z.Tools.Common
                 folders.Add(folder);
             }
             return folders.ToArray();
+        }
+
+        /// <summary>
+        /// 返回路径文件（夹）的名称
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string GetName(string path)
+        {
+            if (File.Exists(path))
+            {
+                return Path.GetFileName(path);
+            }
+            else
+            {
+                return Path.GetDirectoryName(path);
+            }
         }
 
         /// <summary>
