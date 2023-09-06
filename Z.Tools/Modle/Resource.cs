@@ -1,18 +1,19 @@
 ﻿namespace Z.Tools.Modle
 {
-    public class Resource
+    public abstract class Resource
     {
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 绝对路径，不包括目标名称
+        /// </summary>
         public string Path { get; set; }
-        public string Directory { get; set; }
+        /// <summary>
+        /// 绝对路径
+        /// </summary>
         public string FullName { get; set; }
 
-        public void SetInfo(string name, string path, string directory, string fullName)
-        {
-            this.Name = name;
-            this.Path = path;
-            this.Directory = directory;
-            this.FullName = fullName;
-        }
     }
 }

@@ -1,219 +1,105 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Z.Tools.Modle;
+using File = Z.Tools.Modle.File;
 
 namespace Z.Tools.Common
 {
-    public static class FileTools
+    public class FileTools : ResourceEdit
     {
         /// <summary>
-        /// 获取文件夹中的文件
+        /// 获取目录下的文件
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="path">目录路径</param>
         /// <returns></returns>
-        public static FileInfo[] GetFiles(string path)
+        public List<Resource> GetFiles(string path)
         {
-            DirectoryInfo directory = new DirectoryInfo(path);
-            FileInfo[] files = directory.GetFiles();
+            //检测是否为目录
+            if (!Directory.Exists(path))
+            {
+                throw new IOException("不是一个有效的目录路径");
+            }
+            DirectoryInfo info = new DirectoryInfo(path); //创建目录实例
+            List<Resource> files = new List<Resource>();
+            //遍历文件
+            foreach (var item in info.GetFiles())
+            {
+                File file = new File();
+                file.SetInfo(item.Name, item.DirectoryName, item.FullName, item.Directory.Name);
+                files.Add(file);
+            }
             return files;
         }
 
         /// <summary>
-        /// 获取多个路径的文件
-        /// </summary>
-        /// <param name="paths"></param>
-        /// <returns></returns>
-        public static FileInfo[] GetFiles(string[] paths)
-        {
-            List<FileInfo> files = new List<FileInfo>();
-            foreach (string path in paths)
-            {
-                FileInfo fileInfo = new FileInfo(path);
-                files.Add(fileInfo);
-            }
-            return files.ToArray();
-        }
-
-        /// <summary>
-        /// 获取文件夹中的文件夹
+        /// 从路径数组加载文件
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static DirectoryInfo[] GetFolders(string path)
+        public List<Resource> GetFiles(string[] paths)
         {
-            DirectoryInfo directory = new DirectoryInfo(path);
-            DirectoryInfo[] folders = directory.GetDirectories();
-            return folders;
-        }
-
-        /// <summary>
-        /// 获取多个路径的文件夹
-        /// </summary>
-        /// <param name="paths"></param>
-        /// <returns></returns>
-        public static DirectoryInfo[] GetFolders(string[] paths)
-        {
-            List<DirectoryInfo> folders = new List<DirectoryInfo>();
-            foreach (string path in paths)
+            List<Resource> files = new List<Resource>();
+            foreach (var path in paths)
             {
-                DirectoryInfo folder = new DirectoryInfo(path);
-                folders.Add(folder);
-            }
-            return folders.ToArray();
-        }
-
-        /// <summary>
-        /// 返回路径文件（夹）的名称
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static string GetName(string path)
-        {
-            if (File.Exists(path))
-            {
-                return Path.GetFileName(path);
-            }
-            else
-            {
-                return Path.GetDirectoryName(path);
-            }
-        }
-
-        /// <summary>
-        /// 进行备份(文件)
-        /// </summary>
-        /// <param name="files"></param>
-        public static string CreateBackUp(FileInfo[] files)
-        {
-            string pathDir = $"{files.First().DirectoryName}\\备份";
-            DirectoryInfo directory = new DirectoryInfo(pathDir);
-            if (directory.Exists == false)
-            {
-                directory.Create();
-            }
-            foreach (var file in files)
-            {
-                var destFileName = Path.Combine(directory.FullName, file.Name);
-                if (!File.Exists(destFileName))
+                //跳过非文件
+                if (!System.IO.File.Exists(path))
                 {
-                    file.CopyTo(destFileName);
+                    continue;
                 }
+                FileInfo info = new FileInfo(path);
+                File file = new File();
+                file.SetInfo(info.Name, info.DirectoryName, info.FullName, info.Directory.Name);
+                files.Add(file);
             }
-            return pathDir;
+            return files;
         }
 
         /// <summary>
-        /// 进行备份(文件夹)
+        /// 对文件进行重名
         /// </summary>
-        /// <param name="folders"></param>
-        public static string CreateBackUp(DirectoryInfo[] folders)
-        {
-            string pathDir = $"{folders.First().Parent.FullName}\\备份";
-            DirectoryInfo directory = new DirectoryInfo(pathDir);
-            if (directory.Exists == false)
-            {
-                directory.Create();
-            }
-
-            CopyDirectory(folders, directory.FullName);
-
-            return pathDir;
-        }
-
-        /// <summary>
-        /// 修改文件的名称
-        /// </summary>
-        /// <param name="files"></param>
+        /// <param name="resources"></param>
         /// <returns></returns>
-        public static List<string> ChangeFileName(FileInfo[] files)
+        public override List<string> ChangeName(List<Resource> resources)
         {
             int count = 0;
             List<string> result = new List<string>();
-            string srcPath = string.Empty;
-            foreach (var file in files)
+            foreach (var item in resources)
             {
-                count++;
-                srcPath = file.DirectoryName;
-                string srcFileName = file.Name;
-                string destFileName = RemoveParentheses(srcFileName, count);
-                if (srcFileName != destFileName)
+                if (item.Name == "备份")
                 {
-                    result.Add(string.Join(" -> ", srcFileName, destFileName));
-                    file.MoveTo(Path.Combine(srcPath, destFileName)); //修改文件名
+                    continue;
                 }
+                count++;
+                string srcFullName = item.FullName;
+                string destName = RemoveParentheses(item.Name, count);
+                string destFullName = Path.Combine(item.Path, destName);
+                System.IO.File.Move(srcFullName, destFullName);
+                result.Add(string.Join(" -> ", item.Name, destName));
             }
-            result.Add("保存位置：" + srcPath);
             return result;
         }
 
         /// <summary>
-        /// 修改文件夹的名称
+        /// 创建备份
         /// </summary>
+        /// <param name="resources"></param>
         /// <returns></returns>
-        public static List<string> ChangeFileName(DirectoryInfo[] folders)
+        public override string CreateBackUp(List<Resource> resources)
         {
-            int count = 0;
-            List<string> result = new List<string>();
-            string srcPath = string.Empty;
-            foreach (var folder in folders)
+            string backUpPath = $"{resources.First().Path}\\备份";
+            if (Directory.Exists(backUpPath))
             {
-                count++;
-                srcPath = folder.Parent.FullName;
-                string srcFileName = folder.Name;
-                string destFileName = RemoveParentheses(srcFileName, count);
-                if (srcFileName != destFileName)
-                {
-                    result.Add(string.Join(" -> ", srcFileName, destFileName));
-                    folder.MoveTo(Path.Combine(srcPath, destFileName)); //修改文件名
-                }
+                return "存在名为备份的文件夹，自动跳过备份操作";
             }
-            result.Add("保存位置：" + srcPath);
-            return result;
-        }
-
-        /// <summary>
-        /// 删除文件名的括号以及括号的内容
-        /// </summary>
-        /// <param name="srcFileName"></param>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        private static string RemoveParentheses(string srcFileName, int count)
-        {
-            string fileName = Regex.Replace(srcFileName, @"\([^)]*\)", ""); // 去除括号及内容
-
-            fileName = Regex.Replace(fileName, @"(?:\s|\d)+(?=\.|\s|$)", math =>
+            Directory.CreateDirectory(backUpPath); //创建目录
+            foreach (var item in resources)
             {
-                return count.ToString();
-            }); //对文件名进行编号
-
-            return fileName;
-        }
-
-        /// <summary>
-        /// 拷贝目录下的文件夹和文件
-        /// </summary>
-        /// <param name="folders">文件夹数组</param>
-        /// <param name="destinationDir">目标目录</param>
-        /// <param name="recursive">子目录</param>
-        private static void CopyDirectory(DirectoryInfo[] folders, string destinationDir)
-        {
-            foreach (var folder in folders)
-            {
-                if (folder.Name == "备份") continue; //跳过名为备份的文件夹
-                DirectoryInfo copyDirectory = new DirectoryInfo(Path.Combine(destinationDir, folder.Name)); //拼接路径不同父文件夹的同名文件夹
-                if (copyDirectory.Exists == false) copyDirectory.Create(); //创建要拷贝的目录
-                foreach (var file in folder.GetFiles())
-                {
-                    string targetFilePath = Path.Combine(copyDirectory.FullName, file.Name);
-                    file.CopyTo(targetFilePath);
-                }
-
-                if (folder.GetDirectories().Length != 0) //检查是否存在子目录
-                {
-                    CopyDirectory(folder.GetDirectories(), copyDirectory.FullName);
-                }
+                string srcFullName = item.FullName;
+                string destFullName = Path.Combine(backUpPath, item.Name);
+                System.IO.File.Copy(srcFullName, destFullName); //拷贝文件
             }
+            return $"备份路径:{backUpPath}";
         }
     }
 }

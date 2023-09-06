@@ -4,18 +4,23 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using Z.Tools.Common;
 using Z.Tools.Extensions;
+using Z.Tools.Modle;
+using static System.Net.WebRequestMethods;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 
 namespace Z.Tools
 {
     public partial class MainForm : Form
     {
-        private bool isFile = true;
-        private List<string> files = new List<string>();
-        private List<string> folders = new List<string>();
+        FileTools fileTools = new FileTools();
+        FolderTools folderTools = new FolderTools();
         public MainForm()
         {
             InitializeComponent();
@@ -23,12 +28,16 @@ namespace Z.Tools
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            pathTB.Text = "拖拽文件夹（仅支持单个文件夹）";
+            pathTB.Text = "拖拽文件(夹)";
             pathTB.ForeColor = Color.Gray;
 
             rPMenuItem.Checked = true;
             rPMenuItem.BackColor = SystemColors.ControlDark;
             rPLayoutPanel.Visible = true;
+
+            msgLB.Items.Add("想修改文件夹时，别忘记调为文件夹模式哦。");
+            msgLB.Items.Add("选择按钮只能选择想修改的文件（夹）的父目录。");
+            
         }
 
         #region TextBox
@@ -60,21 +69,43 @@ namespace Z.Tools
             try
             {
                 //在此处获取文件路径  或者文件夹的路径
-                //string tempStr = ((Array)e.Data.GetData(DataFormats.FileDrop)).GetValue(0).ToString();
-                string[] tempStr = ((string[])e.Data.GetData(DataFormats.FileDrop)); //支持多文件拖拽
+                string[] inputStr = ((string[])e.Data.GetData(DataFormats.FileDrop)); //支持多文件拖拽
 
-                pathTB.Text = string.Join(",", tempStr);
-                
-
-                //pathTB.Text = tempStr;
-                //FileInfo[] files = FileTools.GetFiles(tempStr);
-                //foreach (var file in files)
-                //{
-                //    msgLB.Items.Add(file.Name);
-                //}
-                //changeBtn.Enabled = true;
-                //pathTB.ForeColor = Color.Black;
-                //isFile = true;
+                pathTB.Text = string.Join(",", inputStr);
+                List<Resource> resources = null;
+                if (folderMode.CheckState == CheckState.Checked) //文件夹模式
+                {
+                    if (!Directory.Exists(inputStr.First()))
+                    {
+                        MessageBox.Show("文件夹模式请输入文件夹");
+                        return;
+                    }
+                    if (inputStr.Length > 1)
+                    {
+                        resources = folderTools.GetFolders(inputStr); //输入多个绝对路径文件夹，则获取这些文件夹
+                    }
+                    else
+                    {
+                        resources = folderTools.GetFolders(inputStr.First()); //输入一个目录绝对路径，则获取目录下的文件夹
+                    }
+                }
+                else //文件模式
+                {
+                    if (inputStr.Length > 1)
+                    {
+                        resources = fileTools.GetFiles(inputStr); //输入多个绝对路径文件，则获取这些文件
+                    }
+                    else
+                    {
+                        resources = fileTools.GetFiles(inputStr.First()); //输入一个目录绝对路径，则获取目录下的文件
+                    }
+                }
+                foreach (var resource in resources)
+                {
+                    msgLB.Items.Add(resource.FullName);
+                }
+                changeBtn.Enabled = true;
+                pathTB.ForeColor = Color.Black;
             }
             catch (Exception ex)
             {
@@ -89,7 +120,7 @@ namespace Z.Tools
         /// <param name="e"></param>
         private void pathTB_Enter(object sender, EventArgs e)
         {
-            if (pathTB.Text == "拖拽文件夹（仅支持单个文件夹）")
+            if (pathTB.Text == "拖拽文件(夹)")
             {
                 pathTB.Text = "";
                 pathTB.ForeColor = Color.Black;
@@ -105,7 +136,7 @@ namespace Z.Tools
         {
             if (string.IsNullOrWhiteSpace(pathTB.Text))
             {
-                pathTB.Text = "拖拽文件夹（仅支持单个文件夹）";
+                pathTB.Text = "拖拽文件(夹)";
                 pathTB.ForeColor = Color.Gray;
             }
         }
@@ -115,54 +146,34 @@ namespace Z.Tools
         #region Button
 
         /// <summary>
-        /// 选择要处理的文件(支持多选)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void selectFileBtn_Click(object sender, EventArgs e)
-        {
-            isFile = true;
-            OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Multiselect = true; //设置为多选
-            fileDialog.Title = "选择要处理的文件(支持多选)"; //设置标题
-            fileDialog.RestoreDirectory = true; //设置
-
-            if (fileDialog.ShowDialog() == DialogResult.OK)
-            {
-                pathTB.Text = string.Join(",", fileDialog.FileNames);
-                pathTB.ForeColor = Color.Black;
-                msgLB.Items.Clear();
-                foreach (var item in fileDialog.FileNames)
-                {
-                    msgLB.Items.Add(item);
-                }
-                changeBtn.Enabled = true;
-
-            }
-        }
-
-        /// <summary>
         /// 选择要处理的文件夹(支持多选)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void selectFolderBtn_Click(object sender, EventArgs e)
+        private void selectResourceBtn_Click(object sender, EventArgs e)
         {
-            isFile = false;
-            CommonOpenFileDialog folderDialog = new CommonOpenFileDialog();
-            folderDialog.IsFolderPicker = true; //设置为选择文件夹
-            folderDialog.Multiselect = true; //设置为多选
-            folderDialog.Title = "选择要处理的文件夹(支持多选)"; //设置标题
-            folderDialog.RestoreDirectory = true; //设置
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.Title = "选择要处理的文件(夹)"; //设置标题
+            dialog.IsFolderPicker = true; //设置为选择文件夹
+            dialog.RestoreDirectory = true; //设置
 
-            if (folderDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                pathTB.Text = string.Join(",", folderDialog.FileNames);
+                pathTB.Text = string.Join(",", dialog.FileNames);
                 pathTB.ForeColor = Color.Black;
                 msgLB.Items.Clear();
-                foreach (var item in folderDialog.FileNames)
+                List<Resource> resources = null;
+                if (folderMode.CheckState == CheckState.Checked)
                 {
-                    msgLB.Items.Add(item);
+                    resources = folderTools.GetFolders(dialog.FileName);
+                }
+                else
+                {
+                    resources = fileTools.GetFiles(dialog.FileName);
+                }
+                foreach (var item in resources)
+                {
+                    msgLB.Items.Add(item.FullName);
                 }
                 changeBtn.Enabled = true;
             }
@@ -177,13 +188,34 @@ namespace Z.Tools
         {
             try
             {
-                if (isFile == true)
+                List<string> list;
+                if (folderMode.CheckState == CheckState.Checked) //文件夹模式
                 {
-                    ChangeFiles(); //修改文件
+                    List<Resource> resources = folderTools.GetFolders(pathTB.Text.GetPath());
+                    if (isBackUp.CheckState == CheckState.Checked)
+                    {
+                        string backUpPath = folderTools.CreateBackUp(resources);
+                        msgLB.Items.Add($"备份完成：{backUpPath}");
+                    }
+
+                    list = folderTools.ChangeName(resources); //修改文件名称，并返回结果
                 }
                 else
                 {
-                    ChangeFolders(); //修改文件夹
+                    List<Resource> resources = fileTools.GetFiles(pathTB.Text.GetPath());
+                    if (isBackUp.CheckState == CheckState.Checked)
+                    {
+                        string backUpPath = fileTools.CreateBackUp(resources);
+                        msgLB.Items.Add($"备份完成：{backUpPath}");
+                    }
+
+                    list = fileTools.ChangeName(resources); //修改文件名称，并返回结果
+                }
+                changeBtn.Enabled = false;
+                isBackUp.Checked = false;
+                foreach (var item in list)
+                {
+                    msgLB.Items.Add(item);
                 }
             }
             catch (Exception ex)
@@ -240,50 +272,22 @@ namespace Z.Tools
 
         #endregion
 
-        #region MyPrivate
-
-        /// <summary>
-        /// 修改文件名称
-        /// </summary>
-        private void ChangeFiles()
+        private void folderMode_CheckedChanged(object sender, EventArgs e)
         {
+            if (folderMode.CheckState == CheckState.Checked)
+            {
+                selectResourceBtn.Text = "选择文件夹";
+                selectResourceBtn.BackColor = Color.NavajoWhite;
+                pathTB.BackColor = Color.NavajoWhite;
+            }
+            else
+            {
+                selectResourceBtn.Text = "选择文件";
+                selectResourceBtn.BackColor = SystemColors.Control;
+                pathTB.BackColor = SystemColors.Control;
+            }
+            pathTB.Text = string.Empty;
             msgLB.Items.Clear();
-            FileInfo[] files = FileTools.GetFiles(pathTB.Text.GetPath()); //根据路径获取路径下的文件
-            if (isBackUp.CheckState == CheckState.Checked)
-            {
-                string backUpPath = FileTools.CreateBackUp(files);
-                msgLB.Items.Add($"备份完成：{backUpPath}");
-            }
-            changeBtn.Enabled = false;
-            isBackUp.Checked = false;
-            List<string> list = FileTools.ChangeFileName(files); //修改文件名称，并返回结果
-            foreach (var item in list)
-            {
-                msgLB.Items.Add(item);
-            }
         }
-
-        /// <summary>
-        /// 修改文件夹名称
-        /// </summary>
-        private void ChangeFolders()
-        {
-            msgLB.Items.Clear();
-            DirectoryInfo[] folders = FileTools.GetFolders(pathTB.Text.GetPath()); //根据路径获取路径下的文件夹
-            if (isBackUp.CheckState == CheckState.Checked)
-            {
-                string backUpPath = FileTools.CreateBackUp(folders);
-                msgLB.Items.Add($"备份完成：{backUpPath}");
-            }
-            changeBtn.Enabled = false;
-            isBackUp.Checked = false;
-            List<string> list = FileTools.ChangeFileName(folders); //修改文件夹名称，并返回结果
-            foreach (var item in list)
-            {
-                msgLB.Items.Add(item);
-            }
-        }
-
-        #endregion
     }
 }
