@@ -1,0 +1,115 @@
+﻿<Window
+    x:Class="Z.JuimiTool.Views.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gif="http://wpfanimatedgif.codeplex.com"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:Z.JuimiTool.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    Width="800"
+    Height="450"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <Style x:Key="IconButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel
+            x:Name="spMove"
+            Grid.Column="0"
+            Background="#2F2F4F">
+            <Image
+                Width="45"
+                Height="45"
+                Margin="0,15,0,15"
+                gif:ImageBehavior.AnimatedSource="/Images/jiumi.gif">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding ImageCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Image>
+
+            <Button
+                Width="30"
+                Height="30"
+                Margin="0,15,0,15"
+                Command="{Binding FileCommand}"
+                Style="{StaticResource IconButton}"
+                ToolTip="文件模式">
+                <Button.Content>
+                    <Image Source="{Binding FileUrl}" />
+                </Button.Content>
+            </Button>
+
+            <Button
+                Width="30"
+                Height="30"
+                Margin="0,15,0,15"
+                Command="{Binding VideoCommand}"
+                Style="{StaticResource IconButton}"
+                ToolTip="视频模式">
+                <Button.Content>
+                    <Image Source="{Binding VideoUrl}" />
+                </Button.Content>
+            </Button>
+        </StackPanel>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <DockPanel x:Name="dpMove" LastChildFill="False" Background="AliceBlue">
+                <StackPanel
+                    Margin="0,0,10,0"
+                    DockPanel.Dock="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        x:Name="btnMin"
+                        Width="30"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Content="—" />
+                    <Button
+                        x:Name="btnClose"
+                        Width="30"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Content="✕" />
+                </StackPanel>
+
+                <TextBlock
+                    Margin="16,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    Text="啾咪小工具" />
+            </DockPanel>
+
+            <ContentControl Grid.Row="1" prism:RegionManager.RegionName="ContentRegion" />
+        </Grid>
+    </Grid>
+</Window>
