@@ -16,11 +16,11 @@
                 Height="250"
                 Margin="0,50,0,30"
                 gif:ImageBehavior.AnimatedSource="/Images/jiumi.gif" />
-            <TextBlock
+            <Label
                 HorizontalAlignment="Center"
+                Content="啾咪一下"
                 FontSize="24"
-                Foreground="#FF7F00"
-                Text="啾咪一下" />
+                Foreground="#FF7F00" />
         </StackPanel>
     </Grid>
 </UserControl>

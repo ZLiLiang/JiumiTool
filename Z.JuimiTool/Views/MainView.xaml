@@ -39,6 +39,7 @@
             x:Name="spMove"
             Grid.Column="0"
             Background="#2F2F4F">
+
             <Image
                 Width="45"
                 Height="45"
@@ -49,6 +50,12 @@
                         <i:InvokeCommandAction Command="{Binding ImageCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
+                <Image.Clip>
+                    <RectangleGeometry
+                        RadiusX="5"
+                        RadiusY="5"
+                        Rect="0,0,45,45" />
+                </Image.Clip>
             </Image>
 
             <Button
@@ -82,7 +89,10 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <DockPanel x:Name="dpMove" LastChildFill="False" Background="AliceBlue">
+            <DockPanel
+                x:Name="dpMove"
+                Background="AliceBlue"
+                LastChildFill="False">
                 <StackPanel
                     Margin="0,0,10,0"
                     DockPanel.Dock="Right"

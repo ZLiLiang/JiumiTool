@@ -2,10 +2,11 @@
 using Prism.Mvvm;
 using Prism.Regions;
 using Z.JuimiTool.Common;
+using Z.JuimiTool.Constants;
 
 namespace Z.JuimiTool.ViewModels
 {
-    public class MainViewModel : BindableBase
+    public class MainViewModel : BindableBase, IConfigureService
     {
         private readonly IRegionManager _regionManager;
         private string fileUrl = ImageUrl.FileBefore;
@@ -25,11 +26,6 @@ namespace Z.JuimiTool.ViewModels
             FileCommand = new DelegateCommand(FileExecute);
             VideoCommand = new DelegateCommand(VideoExecute);
             ImageCommand = new DelegateCommand(ImageExecute);
-        }
-
-        public void InitRegion()
-        {
-            _regionManager.Regions["ContentRegion"].RequestNavigate("JuimiView");
         }
 
         #region 私有执行
@@ -65,6 +61,11 @@ namespace Z.JuimiTool.ViewModels
         {
             FileUrl = ImageUrl.FileBefore;
             VideoUrl = ImageUrl.VideoBefore;
+        }
+
+        public void Configure()
+        {
+            _regionManager.Regions["ContentRegion"].RequestNavigate("JuimiView");
         }
     }
 }
