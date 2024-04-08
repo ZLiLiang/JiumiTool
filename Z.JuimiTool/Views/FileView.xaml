@@ -8,7 +8,294 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
-        
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="#FFC564B8" />
+                        <GradientStop Offset="1" Color="#FFF57A7A" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="1"
+                            CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="BlueViolet" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Background="AliceBlue">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80*" />
+            <ColumnDefinition Width="20*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="90*" />
+            </Grid.RowDefinitions>
+            <DockPanel Margin="5">
+                <Label
+                    VerticalAlignment="Center"
+                    Content="文件位置："
+                    FontSize="16" />
+                <!--<Label
+                    Grid.Column="1"
+                    Height="32"
+                    Padding="5"
+                    VerticalAlignment="Center"
+                    Content="{Binding FilePath}"
+                    FontSize="16">
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Label">
+                                        <Border
+                                            Padding="5"
+                                            BorderBrush="Black"
+                                            BorderThickness="1"
+                                            CornerRadius="5">
+                                            <ContentPresenter VerticalAlignment="Center" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Label.Style>
+                </Label>-->
+
+                <Border
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    CornerRadius="5">
+                    <TextBox
+                        Grid.Column="1"
+                        Height="32"
+                        VerticalContentAlignment="Center"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        FontSize="16"
+                        Text="{Binding FilePath}" />
+                </Border>
+            </DockPanel>
+
+            <ListBox
+                Grid.Row="1"
+                Margin="5"
+                ItemsSource="{Binding Message}">
+                <ListBox.Resources>
+                    <Style TargetType="ScrollBar">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ScrollBar">
+                                    <Grid x:Name="RootElement" Background="Transparent">
+                                        <Track x:Name="PART_Track" IsDirectionReversed="true">
+                                            <Track.DecreaseRepeatButton>
+                                                <RepeatButton Visibility="Collapsed" />
+                                            </Track.DecreaseRepeatButton>
+                                            <Track.Thumb>
+                                                <Thumb>
+                                                    <Thumb.Template>
+                                                        <ControlTemplate>
+                                                            <!--  滚动条颜色和圆角设置  -->
+                                                            <Rectangle
+                                                                Name="thumbRect"
+                                                                RadiusX="5"
+                                                                RadiusY="5">
+                                                                <Rectangle.Fill>
+                                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                        <GradientStop Offset="0" Color="#FFC564B8" />
+                                                                        <GradientStop Offset="1" Color="#03ffea" />
+                                                                    </LinearGradientBrush>
+                                                                </Rectangle.Fill>
+                                                            </Rectangle>
+                                                            <!--  鼠标拉动滚动条时的颜色  -->
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="thumbRect" Property="Fill">
+                                                                        <Setter.Value>
+                                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                                                <GradientStop Offset="0" Color="#00EE76" />
+                                                                                <GradientStop Offset="1" Color="#191970" />
+                                                                            </LinearGradientBrush>
+                                                                        </Setter.Value>
+                                                                    </Setter>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Thumb.Template>
+                                                </Thumb>
+                                            </Track.Thumb>
+                                            <Track.IncreaseRepeatButton>
+                                                <RepeatButton Visibility="Collapsed" />
+                                            </Track.IncreaseRepeatButton>
+                                        </Track>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.Resources>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="IsEnabled" Value="False" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <StackPanel Grid.Column="1" Margin="5,6.3,5,5">
+            <Button
+                Height="32"
+                Command="{Binding SelectCommand}"
+                Content="选择文件" />
+            <ComboBox
+                Height="30"
+                Margin="0,10,0,0"
+                ItemsSource="{Binding Modes}"
+                SelectedIndex="{Binding SelectedMode}">
+                <ComboBox.Style>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ComboBox">
+                                    <Border
+                                        Margin="1,0,1,0"
+                                        Background="Transparent"
+                                        BorderBrush="Gray"
+                                        BorderThickness="1"
+                                        CornerRadius="5">
+                                        <Grid>
+                                            <!--  下拉箭头  -->
+                                            <ToggleButton
+                                                Width="Auto"
+                                                MinWidth="0"
+                                                MinHeight="0"
+                                                Margin="2"
+                                                ClickMode="Press"
+                                                Focusable="False"
+                                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                                <ToggleButton.Style>
+                                                    <Style TargetType="ToggleButton">
+                                                        <Setter Property="MinWidth" Value="0" />
+                                                        <Setter Property="MinHeight" Value="0" />
+                                                        <Setter Property="Width" Value="Auto" />
+                                                        <Setter Property="Height" Value="Auto" />
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                        <Setter Property="BorderBrush" Value="#00000000" />
+                                                        <Setter Property="BorderThickness" Value="2" />
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="ToggleButton">
+                                                                    <DockPanel
+                                                                        Background="{TemplateBinding Background}"
+                                                                        LastChildFill="False"
+                                                                        SnapsToDevicePixels="True">
+                                                                        <Border
+                                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                                                            DockPanel.Dock="Right">
+                                                                            <Path
+                                                                                HorizontalAlignment="Center"
+                                                                                VerticalAlignment="Center"
+                                                                                Data="M0,0L3.5,4 7,0z"
+                                                                                Fill="{TemplateBinding Foreground}" />
+                                                                        </Border>
+                                                                    </DockPanel>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsChecked" Value="True" />
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ToggleButton.Style>
+                                            </ToggleButton>
+
+                                            <!--  项内容  -->
+                                            <ContentPresenter
+                                                Margin="3"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Center"
+                                                Content="{TemplateBinding SelectionBoxItem}"
+                                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                IsHitTestVisible="False" />
+
+                                            <!--  下拉显示面板HorizontalOffset:设置下拉面板的相对位置  -->
+                                            <Popup
+                                                Width="{TemplateBinding ActualWidth}"
+                                                Focusable="False"
+                                                HorizontalOffset="-1"
+                                                IsOpen="{TemplateBinding IsDropDownOpen}"
+                                                PopupAnimation="Slide">
+                                                <Grid HorizontalAlignment="Stretch" SnapsToDevicePixels="True">
+                                                    <Border
+                                                        HorizontalAlignment="Stretch"
+                                                        BorderBrush="Gray"
+                                                        BorderThickness="1,1,1,1">
+                                                        <Border.Background>
+                                                            <SolidColorBrush Color="White" />
+                                                        </Border.Background>
+                                                    </Border>
+                                                    <ScrollViewer HorizontalAlignment="Stretch" SnapsToDevicePixels="True">
+                                                        <StackPanel
+                                                            HorizontalAlignment="Stretch"
+                                                            IsItemsHost="True"
+                                                            KeyboardNavigation.DirectionalNavigation="Contained" />
+                                                    </ScrollViewer>
+                                                </Grid>
+                                            </Popup>
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ComboBox.Style>
+            </ComboBox>
+
+            <CheckBox
+                Margin="1,10,0,0"
+                VerticalContentAlignment="Center"
+                Content="对原文件备份" />
+            <Button
+                Height="32"
+                Margin="0,10,0,0"
+                Content="修改文件" />
+            <Button
+                Height="32"
+                Margin="0,10,0,0"
+                Command="{Binding ClearCommand}"
+                Content="清除记录" />
+        </StackPanel>
     </Grid>
 </UserControl>
