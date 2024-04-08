@@ -1,4 +1,4 @@
-﻿namespace Z.JuimiTool.Common
+﻿namespace Z.JuimiTool.Constants
 {
     public static class ImageUrl
     {
