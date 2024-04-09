@@ -5,6 +5,8 @@ using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Services.Dialogs;
 using Z.JuimiTool.Common;
+using Z.JuimiTool.IServices;
+using Z.JuimiTool.Services;
 using Z.JuimiTool.ViewModels;
 using Z.JuimiTool.Views;
 
@@ -17,10 +19,17 @@ namespace Z.JuimiTool
     {
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            //服务
+            containerRegistry.Register<IFileService, FileService>();
+            containerRegistry.Register<IFolderService, FolderService>();
+
+            //弹窗
+            containerRegistry.RegisterDialog<WelcomeView, WelcomeViewModel>();
+
+            //导航
             containerRegistry.RegisterForNavigation<JuimiView>();
             containerRegistry.RegisterForNavigation<FileView, FileViewModel>();
             containerRegistry.RegisterForNavigation<VideoView, VideoViewModel>();
-            containerRegistry.RegisterForNavigation<WelcomeView, WelcomeViewModel>();
         }
 
         protected override Window CreateShell()
