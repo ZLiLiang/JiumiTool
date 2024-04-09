@@ -16,7 +16,7 @@ namespace Z.JuimiTool.ViewModels
         /// <summary>
         /// 文件/文件夹模式
         /// </summary>
-        public List<string> Modes { get; set; } = EnumExtensions.ToList<ModifyMode>();
+        public List<string> Modes { get; set; } = EnumExtension.ToList<ModifyMode>();
         /// <summary>
         /// 选择模式
         /// </summary>
