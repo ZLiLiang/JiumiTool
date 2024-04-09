@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Z.JuimiTool.Extensions
 {
-    public static class EnumExtensions
+    public static class EnumExtension
     {
         public static List<string> ToList<T>() where T : Enum
         {

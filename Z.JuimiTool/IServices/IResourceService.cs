@@ -3,7 +3,7 @@ using Z.JuimiTool.Models;
 
 namespace Z.JuimiTool.IServices
 {
-    public interface IResourceServices
+    public interface IResourceService
     {
         /// <summary>
         /// 获取路径下的资源

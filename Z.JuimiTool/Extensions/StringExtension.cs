@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Z.JuimiTool.Extensions
 {
-    public static class StringExtensions
+    public static class StringExtension
     {
         /// <summary>
         /// 对路径以','进行分割
