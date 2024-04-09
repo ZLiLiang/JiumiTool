@@ -87,7 +87,7 @@ namespace Z.JuimiTool.Services
             return result;
         }
 
-        public string BackUp(IEnumerable<Resource> resources)
+        public string Backup(IEnumerable<Resource> resources)
         {
             var backUpPath = $"{resources.First().Path}\\备份-{DateTime.Now:yyyy/MM/dd HH:mm:ss}";
             //创建目录

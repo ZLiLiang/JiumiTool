@@ -17,6 +17,6 @@ namespace Z.JuimiTool.IServices
         /// </summary>
         /// <param name="resources">资源列表</param>
         /// <returns>路径</returns>
-        public string BackUp(IEnumerable<Resource> resources);
+        public string Backup(IEnumerable<Resource> resources);
     }
 }
