@@ -3,13 +3,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:Z.JuimiTool.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <Style TargetType="Button">
+        <Style x:Key="buttonStyle" TargetType="Button">
             <Setter Property="FontSize" Value="16" />
             <Setter Property="Background">
                 <Setter.Value>
@@ -61,14 +62,25 @@
                     BorderThickness="1"
                     CornerRadius="5">
                     <TextBox
+                        x:Name="tbFilePath"
                         Grid.Column="1"
                         Height="32"
                         VerticalContentAlignment="Center"
+                        AllowDrop="True"
                         Background="Transparent"
                         BorderBrush="Transparent"
                         FontSize="16"
                         IsReadOnly="True"
-                        Text="{Binding FilePath}" />
+                        Text="{Binding FilePath}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Drop">
+                                <i:InvokeCommandAction Command="{Binding DragDropCommand}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="PreviewDragOver">
+                                <i:InvokeCommandAction Command="{Binding PreviewDragOverCommand}" PassEventArgsToCommand="True" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                 </Border>
             </DockPanel>
 
@@ -146,7 +158,8 @@
             <Button
                 Height="32"
                 Command="{Binding SelectCommand}"
-                Content="选择文件" />
+                Content="选择"
+                Style="{StaticResource buttonStyle}" />
             <ComboBox
                 Height="30"
                 Margin="0,10,0,0"
@@ -261,16 +274,34 @@
             <CheckBox
                 Margin="1,10,0,0"
                 VerticalContentAlignment="Center"
-                Content="对原文件备份" />
+                Content="对原文件(夹)备份"
+                IsChecked="{Binding IsBackup}" />
             <Button
                 Height="32"
                 Margin="0,10,0,0"
-                Content="修改文件" />
+                Content="修改"
+                IsEnabled="{Binding IsModify}">
+                <Button.Style>
+                    <Style BasedOn="{StaticResource buttonStyle}" TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsModify}" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <Button
                 Height="32"
                 Margin="0,10,0,0"
                 Command="{Binding ClearCommand}"
-                Content="清除记录" />
+                Content="清除记录"
+                Style="{StaticResource buttonStyle}" />
+            <TextBlock
+                Margin="3,180,3,0"
+                FontWeight="ExtraLight"
+                Text="Tip：单文件(夹)可以使用选择按钮，多文件(夹)可以使用拖拽。"
+                TextWrapping="Wrap" />
         </StackPanel>
     </Grid>
 </UserControl>
