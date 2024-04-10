@@ -41,7 +41,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid Background="AliceBlue">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80*" />
             <ColumnDefinition Width="20*" />
