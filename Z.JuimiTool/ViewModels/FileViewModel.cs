@@ -126,7 +126,54 @@ namespace Z.JuimiTool.ViewModels
         /// </summary>
         private void ModifyExecute()
         {
+            try
+            {
+                List<string> result;
+                //文件模式
+                if (SelectedMode == (int)ModifyMode.File)
+                {
+                    var resources = modifyResources.DequeueToList();
+                    if (IsBackup == true)
+                    {
+                        var backupPath = fileService.Backup(resources);
+                        Message.Add($"备份完成：{backupPath}");
+                    }
+                    //对文件重命名
+                    result = fileService.RepeatName(resources);
+                }
+                //文件夹模式
+                else
+                {
+                    var resources = modifyResources.DequeueToList();
+                    if (IsBackup == true)
+                    {
+                        var backupPath = folderService.Backup(resources);
+                        Message.Add($"备份完成：{backupPath}");
+                    }
+                    //对文件夹重命名
+                    result = folderService.RepeatName(resources);
+                }
 
+                foreach (var item in result)
+                {
+                    Message.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                Message.Add($"\n-------------------------------\n" +
+                    $"Failed to modify {ex.Message}" +
+                    $"\n-------------------------------\n");
+            }
+            finally
+            {
+                modifyResources.Clear();
+                uniqueResources.Clear();
+                uniquePath.Clear();
+                IsModify = false;
+                isBackup = false;
+            }
         }
 
         /// <summary>
@@ -139,7 +186,7 @@ namespace Z.JuimiTool.ViewModels
             modifyResources.Clear();
             uniqueResources.Clear();
             uniquePath.Clear();
-            IsModify= false;
+            IsModify = false;
         }
 
         /// <summary>
