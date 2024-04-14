@@ -22,6 +22,7 @@ namespace Z.JuimiTool
             //服务
             containerRegistry.Register<IFileService, FileService>();
             containerRegistry.Register<IFolderService, FolderService>();
+            containerRegistry.RegisterSingleton<IHttpsProxyService, HttpsProxyService>();
 
             //弹窗
             containerRegistry.RegisterDialog<WelcomeView, WelcomeViewModel>();
