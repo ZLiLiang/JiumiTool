@@ -21,7 +21,7 @@ namespace Z.JuimiTool.Services
         private bool isDisposed = false;
         private readonly ProxyServer proxyServer;
         private readonly ExplicitProxyEndPoint explicitProxyEndPoint;
-        public List<Video> VideoInfos { get; set; }
+        public event Action<VideoDownloadInfo> VideoAddedToList;
 
         public HttpsProxyService()
         {
@@ -109,9 +109,10 @@ namespace Z.JuimiTool.Services
                     var requestBytes = await e.GetRequestBody();
                     var requestString = Encoding.UTF8.GetString(requestBytes);
 
-                    var model = JsonConvert.DeserializeObject<Video>(requestString);
+                    var model = JsonConvert.DeserializeObject<VideoDownloadInfo>(requestString);
                     model.DecryptionArray = new Rng(model.Decodekey).GetDecryptionArray();
-                    VideoInfos.Add(model);
+
+                    VideoAddedToList.Invoke(model);
                 }
             });
         }

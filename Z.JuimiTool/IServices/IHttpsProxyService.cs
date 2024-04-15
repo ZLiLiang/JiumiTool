@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Z.JuimiTool.Models;
 
 namespace Z.JuimiTool.IServices
@@ -6,9 +7,9 @@ namespace Z.JuimiTool.IServices
     public interface IHttpsProxyService
     {
         /// <summary>
-        /// 视频信息列表
+        /// 传播视频实体
         /// </summary>
-        public List<Video> VideoInfos { get; set; }
+        public event Action<VideoDownloadInfo> VideoAddedToList;
 
         /// <summary>
         /// 开始监听
