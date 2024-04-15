@@ -11,8 +11,10 @@ setTimeout(() => {
         let media = value["object"]["object_desc"]["media"][0];
         let description = value["object"]["object_desc"]["description"].trim();
         let video_data = {
+            "key": media["url"],
             "decodekey": media["decode_key"],
             "url": media["url"] + media["url_token"],
+            "videolen": media["video_play_len"],
             "thumburl": media["thumb_url"],
             "size": media["file_size"],
             "description": description,
