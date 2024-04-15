@@ -9,7 +9,6 @@ using Z.JuimiTool.Models;
 using Z.JuimiTool.IServices;
 using System.Linq;
 using System.Windows;
-using Prism.Services.Dialogs;
 using System;
 
 namespace Z.JuimiTool.ViewModels
