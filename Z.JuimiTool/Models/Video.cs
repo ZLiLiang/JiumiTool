@@ -5,6 +5,11 @@ namespace Z.JiumiTool.Models
     public class Video
     {
         /// <summary>
+        /// 标识
+        /// </summary>
+        public string Key { get; set; }
+
+        /// <summary>
         /// 封面数据
         /// </summary>
         public BitmapImage ImageData { get; set; }
