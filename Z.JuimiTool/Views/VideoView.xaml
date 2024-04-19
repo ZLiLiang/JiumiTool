@@ -8,7 +8,219 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
-        <TextBlock Text="VideoView" />
+    <UserControl.Resources>
+        <Style x:Key="buttonStyle" TargetType="Button">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="0" Color="#FF3A8DE0" />
+                        <GradientStop Offset="1" Color="#FF1E67B0" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="10,5" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Margin" Value="5,5,5,5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="Transparent"
+                            CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF29B6F6" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#FF0097A7" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ListViewStyle" TargetType="ListView">
+            <Setter Property="Background" Value="Transparent" />
+            <!--  文字颜色  -->
+            <Setter Property="Foreground" Value="White" />
+            <!--  字体大小  -->
+            <Setter Property="FontSize" Value="14" />
+            <!--  底部间距  -->
+            <Setter Property="Margin" Value="0,0,0,5" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Width" Value="630" />
+        </Style>
+
+        <Style x:Key="ListViewRoundedStyle" TargetType="Border">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="#FD6585" />
+                        <GradientStop Offset="1" Color="#0D25B9" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Padding" Value="3" />
+            <Setter Property="Margin" Value="0,0,0,5" />
+        </Style>
+
+        <Style x:Key="TextBlockStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+
+        <Style x:Key="ListViewItemStyle" TargetType="ListViewItem">
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="BorderBrush" Value="White" />
+        </Style>
+
+        <Style x:Key="ItemsControlStyle" TargetType="ItemsControl">
+            <!--  背景色  -->
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Offset="0" Color="#BC78EC" />
+                        <GradientStop Offset="1" Color="#0D25B9" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <!--  文字颜色  -->
+            <Setter Property="Foreground" Value="White" />
+            <!--  字体大小  -->
+            <Setter Property="FontSize" Value="16" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Background="AliceBlue">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80*" />
+            <ColumnDefinition Width="20*" />
+        </Grid.ColumnDefinitions>
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80*" />
+                <RowDefinition Height="20*" />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.4*" />
+                    <ColumnDefinition Width="1.2*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid x:Name="column1" Grid.Column="0" />
+                <Grid x:Name="column2" Grid.Column="1" />
+                <Grid x:Name="column3" Grid.Column="2" />
+                <Grid x:Name="column4" Grid.Column="3" />
+                <Grid x:Name="column5" Grid.Column="4" />
+            </Grid>
+
+            <Border Style="{StaticResource ListViewRoundedStyle}">
+                <ListView
+                    ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                    ItemsSource="{Binding Videos}"
+                    Style="{StaticResource ListViewStyle}">
+                    <ListView.View>
+                        <GridView>
+                            <GridView.ColumnHeaderContainerStyle>
+                                <Style TargetType="GridViewColumnHeader">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                                    <Setter Property="VerticalContentAlignment" Value="Center" />
+                                    <Setter Property="IsHitTestVisible" Value="False" />
+                                </Style>
+                            </GridView.ColumnHeaderContainerStyle>
+                            <GridViewColumn Width="{Binding ElementName=column1, Path=ActualWidth}" Header="封面">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image
+                                            MaxWidth="70"
+                                            MaxHeight="70"
+                                            Source="{Binding ImageData}"
+                                            Stretch="UniformToFill" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="{Binding ElementName=column2, Path=ActualWidth}" Header="标题">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="{Binding BriefTitle}"
+                                            ToolTip="{Binding WholeTitle}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="{Binding ElementName=column3, Path=ActualWidth}" Header="时长(秒)">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Style="{StaticResource TextBlockStyle}" Text="{Binding VideoPlayLength}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="{Binding ElementName=column4, Path=ActualWidth}" Header="大小(M)">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Style="{StaticResource TextBlockStyle}" Text="{Binding Size}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="{Binding ElementName=column5, Path=ActualWidth}" Header="作者">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Style="{StaticResource TextBlockStyle}" Text="{Binding Uploader}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+
+            <ItemsControl
+                Grid.Row="1"
+                ItemsSource="{Binding Message}"
+                Style="{StaticResource ItemsControlStyle}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+        <StackPanel Grid.Column="1">
+            <Button
+                Command="{Binding StartCommand}"
+                Content="开始监听"
+                Style="{StaticResource buttonStyle}" />
+            <Button
+                Command="{Binding StopCommand}"
+                Content="停止监听"
+                Style="{StaticResource buttonStyle}" />
+            <Button
+                Command="{Binding DownloadCommand}"
+                Content="下载视频"
+                Style="{StaticResource buttonStyle}" />
+            <Button
+                Command="{Binding PathCommand}"
+                Content="选择路径"
+                Style="{StaticResource buttonStyle}" />
+        </StackPanel>
     </Grid>
 </UserControl>
