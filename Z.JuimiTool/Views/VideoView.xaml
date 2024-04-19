@@ -54,7 +54,7 @@
             <!--  底部间距  -->
             <Setter Property="Margin" Value="0,0,0,5" />
             <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Width" Value="630" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         </Style>
 
         <Style x:Key="ListViewRoundedStyle" TargetType="Border">
@@ -73,14 +73,27 @@
 
         <Style x:Key="TextBlockStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="FontSize" Value="14" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsSelected}" Value="True">
+                    <Setter Property="Foreground" Value="Black" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem}, Path=IsMouseOver}" Value="True">
+                    <Setter Property="Foreground" Value="Black" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="ListViewItemStyle" TargetType="ListViewItem">
-            <Setter Property="BorderThickness" Value="0,0,0,1" />
-            <Setter Property="BorderBrush" Value="White" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="AliceBlue" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="AliceBlue" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="ItemsControlStyle" TargetType="ItemsControl">
@@ -96,10 +109,12 @@
             <!--  文字颜色  -->
             <Setter Property="Foreground" Value="White" />
             <!--  字体大小  -->
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Padding" Value="5,5,0,0" />
         </Style>
     </UserControl.Resources>
-    <Grid Background="AliceBlue">
+
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80*" />
             <ColumnDefinition Width="20*" />
@@ -129,6 +144,7 @@
                 <ListView
                     ItemContainerStyle="{StaticResource ListViewItemStyle}"
                     ItemsSource="{Binding Videos}"
+                    SelectedItem="{Binding SelectedVideos}"
                     Style="{StaticResource ListViewStyle}">
                     <ListView.View>
                         <GridView>
@@ -156,8 +172,11 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock
+                                            HorizontalAlignment="Stretch"
                                             Style="{StaticResource TextBlockStyle}"
                                             Text="{Binding BriefTitle}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap"
                                             ToolTip="{Binding WholeTitle}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
@@ -165,21 +184,33 @@
                             <GridViewColumn Width="{Binding ElementName=column3, Path=ActualWidth}" Header="时长(秒)">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Style="{StaticResource TextBlockStyle}" Text="{Binding VideoPlayLength}" />
+                                        <TextBlock
+                                            HorizontalAlignment="Stretch"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="{Binding VideoPlayLength}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Width="{Binding ElementName=column4, Path=ActualWidth}" Header="大小(M)">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Style="{StaticResource TextBlockStyle}" Text="{Binding Size}" />
+                                        <TextBlock
+                                            HorizontalAlignment="Stretch"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="{Binding Size}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn Width="{Binding ElementName=column5, Path=ActualWidth}" Header="作者">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Style="{StaticResource TextBlockStyle}" Text="{Binding Uploader}" />
+                                        <TextBlock
+                                            HorizontalAlignment="Stretch"
+                                            Style="{StaticResource TextBlockStyle}"
+                                            Text="{Binding Uploader}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap"
+                                            ToolTip="{Binding Uploader}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -188,35 +219,67 @@
                 </ListView>
             </Border>
 
-            <ItemsControl
+            <ScrollViewer
                 Grid.Row="1"
-                ItemsSource="{Binding Message}"
-                Style="{StaticResource ItemsControlStyle}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" TextWrapping="Wrap" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                CanContentScroll="True"
+                VerticalScrollBarVisibility="Hidden">
+                <ItemsControl ItemsSource="{Binding Message}" Style="{StaticResource ItemsControlStyle}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
         <StackPanel Grid.Column="1">
             <Button
                 Command="{Binding StartCommand}"
                 Content="开始监听"
-                Style="{StaticResource buttonStyle}" />
+                IsEnabled="{Binding IsStartEnabled}">
+                <Button.Style>
+                    <Style BasedOn="{StaticResource buttonStyle}" TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsStartEnabled}" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <Button
                 Command="{Binding StopCommand}"
                 Content="停止监听"
-                Style="{StaticResource buttonStyle}" />
+                IsEnabled="{Binding IsStopEnabled}">
+                <Button.Style>
+                    <Style BasedOn="{StaticResource buttonStyle}" TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsStopEnabled}" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <Button
                 Command="{Binding DownloadCommand}"
                 Content="下载视频"
-                Style="{StaticResource buttonStyle}" />
+                IsEnabled="{Binding IsDownloadEnabled}">
+                <Button.Style>
+                    <Style BasedOn="{StaticResource buttonStyle}" TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDownloadEnabled}" Value="False">
+                                <Setter Property="Opacity" Value="0.5" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <Button
                 Command="{Binding PathCommand}"
                 Content="选择路径"
