@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,13 +26,14 @@ namespace Z.JuimiTool.Services
         {
             explicitProxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 8000, true);
             proxyServer = new ProxyServer();
-            //设置系统代理
-            proxyServer.SetAsSystemHttpsProxy(explicitProxyEndPoint);
             //使用Windows证书生成引擎
             proxyServer.CertificateManager.CertificateEngine = CertificateEngine.DefaultWindows;
+            proxyServer.CertificateManager.RootCertificateName = "JiumiCert";
             //启用证书
             proxyServer.CertificateManager.EnsureRootCertificate();
             proxyServer.AddEndPoint(explicitProxyEndPoint);
+            //设置系统代理
+            proxyServer.SetAsSystemHttpsProxy(explicitProxyEndPoint);
         }
 
         public void Start()
