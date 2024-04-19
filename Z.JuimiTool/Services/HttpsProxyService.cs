@@ -58,7 +58,6 @@ namespace Z.JiumiTool.Services
             proxyServer.Stop();
             //禁止系统代理
             proxyServer.DisableSystemHttpsProxy();
-            proxyServer.RemoveEndPoint(explicitProxyEndPoint);
         }
 
         #region 资源释放
