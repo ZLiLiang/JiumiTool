@@ -52,7 +52,7 @@ namespace Z.JiumiTool.ViewModels
         {
             SetImagesBefore();
 
-            _regionManager.Regions["ContentRegion"].RequestNavigate("JuimiView");
+            _regionManager.Regions["ContentRegion"].RequestNavigate("JiumiView");
         }
 
         #endregion
@@ -65,7 +65,7 @@ namespace Z.JiumiTool.ViewModels
 
         public void Configure()
         {
-            _regionManager.Regions["ContentRegion"].RequestNavigate("JuimiView");
+            _regionManager.Regions["ContentRegion"].RequestNavigate("JiumiView");
         }
     }
 }
