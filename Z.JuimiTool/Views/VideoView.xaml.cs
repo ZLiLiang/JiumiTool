@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Z.JuimiTool.Views
+namespace Z.JiumiTool.Views
 {
     /// <summary>
     /// VideoView.xaml 的交互逻辑

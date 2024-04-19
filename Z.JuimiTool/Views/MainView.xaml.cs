@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Z.JuimiTool.Views
+namespace Z.JiumiTool.Views
 {
     /// <summary>
     /// MainView.xaml 的交互逻辑

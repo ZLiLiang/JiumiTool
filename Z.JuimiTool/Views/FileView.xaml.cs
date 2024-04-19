@@ -13,10 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Z.JuimiTool.Constants;
-using Z.JuimiTool.ViewModels;
+using Z.JiumiTool.Constants;
+using Z.JiumiTool.ViewModels;
 
-namespace Z.JuimiTool.Views
+namespace Z.JiumiTool.Views
 {
     /// <summary>
     /// FileView.xaml 的交互逻辑

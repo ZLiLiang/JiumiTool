@@ -8,9 +8,9 @@ using Z.JiumiTool.Common;
 using Z.JiumiTool.IServices;
 using Z.JiumiTool.Services;
 using Z.JiumiTool.ViewModels;
-using Z.JuimiTool.Views;
+using Z.JiumiTool.Views;
 
-namespace Z.JuimiTool
+namespace Z.JiumiTool
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -29,7 +29,7 @@ namespace Z.JuimiTool
             containerRegistry.RegisterDialog<WelcomeView, WelcomeViewModel>();
 
             //导航
-            containerRegistry.RegisterForNavigation<JuimiView>();
+            containerRegistry.RegisterForNavigation<JiumiView>();
             containerRegistry.RegisterForNavigation<FileView, FileViewModel>();
             containerRegistry.RegisterForNavigation<VideoView, VideoViewModel>();
         }

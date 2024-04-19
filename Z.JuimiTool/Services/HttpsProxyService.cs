@@ -11,7 +11,7 @@ using Z.JiumiTool.Constants;
 using Z.JiumiTool.Extensions;
 using Z.JiumiTool.IServices;
 using Z.JiumiTool.Models;
-using Z.JuimiTool.Common;
+using Z.JiumiTool.Common;
 
 namespace Z.JiumiTool.Services
 {

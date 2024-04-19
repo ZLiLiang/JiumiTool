@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Z.JuimiTool.Views
+namespace Z.JiumiTool.Views
 {
     /// <summary>
     /// JuimiView.xaml 的交互逻辑
     /// </summary>
-    public partial class JuimiView : UserControl
+    public partial class JiumiView : UserControl
     {
-        public JuimiView()
+        public JiumiView()
         {
             InitializeComponent();
         }
