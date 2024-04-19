@@ -40,8 +40,13 @@ namespace Z.JiumiTool.Models
         public string Uploader { get; set; }
 
         /// <summary>
-        /// 视频保存路径
+        /// 下载链接
         /// </summary>
-        public string VideoSavePath { get; set; }
+        public string Url { get; set; }
+
+        /// <summary>
+        /// 解密数组
+        /// </summary>
+        public byte[] DecryptionArray { get; set; }
     }
 }
