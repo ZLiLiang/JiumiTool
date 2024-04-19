@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media.Imaging;
 
-namespace Z.JuimiTool.Models
+namespace Z.JiumiTool.Models
 {
     public class Video
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Z.JuimiTool.Extensions
+namespace Z.JiumiTool.Extensions
 {
     public static class QueueExtension
     {

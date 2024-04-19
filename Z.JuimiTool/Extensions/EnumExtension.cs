@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace Z.JuimiTool.Extensions
+namespace Z.JiumiTool.Extensions
 {
     public static class EnumExtension
     {

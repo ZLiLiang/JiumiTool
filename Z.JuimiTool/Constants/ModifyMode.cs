@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Z.JuimiTool.Constants
+namespace Z.JiumiTool.Constants
 {
     public enum ModifyMode
     {

@@ -1,4 +1,4 @@
-﻿namespace Z.JuimiTool.Models
+﻿namespace Z.JiumiTool.Models
 {
     public class Resource
     {

@@ -7,13 +7,13 @@ using Titanium.Web.Proxy;
 using Titanium.Web.Proxy.EventArguments;
 using Titanium.Web.Proxy.Models;
 using Titanium.Web.Proxy.Network;
+using Z.JiumiTool.Constants;
+using Z.JiumiTool.Extensions;
+using Z.JiumiTool.IServices;
+using Z.JiumiTool.Models;
 using Z.JuimiTool.Common;
-using Z.JuimiTool.Constants;
-using Z.JuimiTool.Extensions;
-using Z.JuimiTool.IServices;
-using Z.JuimiTool.Models;
 
-namespace Z.JuimiTool.Services
+namespace Z.JiumiTool.Services
 {
     public class HttpsProxyService : IHttpsProxyService, IDisposable
     {

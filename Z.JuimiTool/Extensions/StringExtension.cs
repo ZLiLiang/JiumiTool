@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Z.JuimiTool.Extensions
+namespace Z.JiumiTool.Extensions
 {
     public static class StringExtension
     {

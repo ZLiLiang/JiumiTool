@@ -2,16 +2,16 @@
 using System.Collections.ObjectModel;
 using Prism.Commands;
 using Prism.Mvvm;
-using Z.JuimiTool.Extensions;
-using Z.JuimiTool.Constants;
 using Microsoft.Win32;
-using Z.JuimiTool.Models;
-using Z.JuimiTool.IServices;
 using System.Linq;
 using System.Windows;
 using System;
+using Z.JiumiTool.Models;
+using Z.JiumiTool.IServices;
+using Z.JiumiTool.Constants;
+using Z.JiumiTool.Extensions;
 
-namespace Z.JuimiTool.ViewModels
+namespace Z.JiumiTool.ViewModels
 {
     public class FileViewModel : BindableBase
     {

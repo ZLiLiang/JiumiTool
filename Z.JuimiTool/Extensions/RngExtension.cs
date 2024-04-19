@@ -1,6 +1,6 @@
-﻿using Z.JuimiTool.Common;
+﻿using Z.JiumiTool.Common;
 
-namespace Z.JuimiTool.Extensions
+namespace Z.JiumiTool.Extensions
 {
     public static class RngExtension
     {

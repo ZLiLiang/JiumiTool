@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Z.JuimiTool.Common
+namespace Z.JiumiTool.Common
 {
     public class Rng
     {
         // size constants
         private const int ISAAC64_WORD_SZ = 8;
-        private const int ISAAC64_SZ_64 = (int)(1 << ISAAC64_WORD_SZ);
-        private const int ISAAC64_SZ_8  = (int)(ISAAC64_SZ_64 << 2);
-        private const ulong IND_MASK = (ulong)(((ISAAC64_SZ_64) - 1) << 3);
+        private const int ISAAC64_SZ_64 = 1 << ISAAC64_WORD_SZ;
+        private const int ISAAC64_SZ_8 = ISAAC64_SZ_64 << 2;
+        private const ulong IND_MASK = ISAAC64_SZ_64 - 1 << 3;
         private const ulong HIGH32 = 0xFFFF_FFFF_0000_0000;
         private const ulong LOW32 = 0x0000_0000_FFFF_FFFF;
         private const ulong LOW16 = 0x0000_0000_0000_FFFF;
@@ -36,7 +36,7 @@ namespace Z.JuimiTool.Common
             internal ulong aa, bb, cc;
 
             // randcnt
-            internal int rngbuf_curptr;            
+            internal int rngbuf_curptr;
         }
 
         // create a context
@@ -133,7 +133,7 @@ namespace Z.JuimiTool.Common
                 if (i % 8 == 0)
                     ctx.rng_buf[i / 8] = 0;
 
-                ctx.rng_buf[i / 8] |= ((ulong)Seedbytes[i] << ((i % 8) * 8));
+                ctx.rng_buf[i / 8] |= (ulong)Seedbytes[i] << i % 8 * 8;
             }
             init();
         }
@@ -152,7 +152,7 @@ namespace Z.JuimiTool.Common
 
             clear_state();
 
-            int sl = (SeedULongs.Length > ISAAC64_SZ_64) ? ISAAC64_SZ_64 : SeedULongs.Length;
+            int sl = SeedULongs.Length > ISAAC64_SZ_64 ? ISAAC64_SZ_64 : SeedULongs.Length;
             for (int i = 0; i < sl; i++)
                 ctx.rng_buf[i] = SeedULongs[i];
 
@@ -179,7 +179,7 @@ namespace Z.JuimiTool.Common
         // clear the rng state
         private void clear_state()
         {
-            for (int i = 0; i < ISAAC64_SZ_64; i++) ctx.rng_state[i] = (ulong)0;
+            for (int i = 0; i < ISAAC64_SZ_64; i++) ctx.rng_state[i] = 0;
         }
 
         // sets the curptr in the rng_buf back to max
@@ -211,16 +211,16 @@ namespace Z.JuimiTool.Common
             switch (state_idx1 % 4)
             {
                 case 0:
-                    a = ~(a ^ (a << 21)) + ctx.rng_state[state_idx2++];
+                    a = ~(a ^ a << 21) + ctx.rng_state[state_idx2++];
                     break;
                 case 1:
-                    a = (a ^ (a >> 5)) + ctx.rng_state[state_idx2++];
+                    a = (a ^ a >> 5) + ctx.rng_state[state_idx2++];
                     break;
                 case 2:
-                    a = (a ^ (a << 12)) + ctx.rng_state[state_idx2++];
+                    a = (a ^ a << 12) + ctx.rng_state[state_idx2++];
                     break;
                 case 3:
-                    a = (a ^ (a >> 33)) + ctx.rng_state[state_idx2++];
+                    a = (a ^ a >> 33) + ctx.rng_state[state_idx2++];
                     break;
             }
 
@@ -240,13 +240,13 @@ namespace Z.JuimiTool.Common
         {
             for (uint i = 0; i < 8; i++)
             {
-                _x[i] -= _x[(i + 4) & 7];
-                _x[(i + 5) & 7] ^= _x[(i + 7) & 7] >> MIX_SHIFT[i];
-                _x[(i + 7) & 7] += _x[i];
+                _x[i] -= _x[i + 4 & 7];
+                _x[i + 5 & 7] ^= _x[i + 7 & 7] >> MIX_SHIFT[i];
+                _x[i + 7 & 7] += _x[i];
                 i++;
-                _x[i] -= _x[(i + 4) & 7];
-                _x[(i + 5) & 7] ^= _x[(i + 7) & 7] << MIX_SHIFT[i];
-                _x[(i + 7) & 7] += _x[i];
+                _x[i] -= _x[i + 4 & 7];
+                _x[i + 5 & 7] ^= _x[i + 7 & 7] << MIX_SHIFT[i];
+                _x[i + 7 & 7] += _x[i];
             }
         }
 
@@ -262,7 +262,7 @@ namespace Z.JuimiTool.Common
             a = ctx.aa;
             b = ctx.bb + (++ctx.cc);
 
-            for (state_idx1 = 0, end_idx = state_idx2 = (ISAAC64_SZ_64 / 2); state_idx1 < end_idx;)
+            for (state_idx1 = 0, end_idx = state_idx2 = ISAAC64_SZ_64 / 2; state_idx1 < end_idx;)
                 for (int i = 0; i < 4; i++)
                     rng_step(ref state_idx1, ref state_idx2, ref rng_idx, ref a, ref b, ref x, ref y);
 
@@ -315,9 +315,9 @@ namespace Z.JuimiTool.Common
             }
 
             if (!Zero)
-            { 
+            {
                 for (i = 0; i < ISAAC64_SZ_64; i += 8)
-                { 
+                {
                     for (int j = 0; j < 8; j++)
                         x[j] += ctx.rng_state[i + j];
 
@@ -345,7 +345,7 @@ namespace Z.JuimiTool.Common
             dec_curptr();
 
             ulong ul = ctx.rng_buf[ctx.rngbuf_curptr];
-            return (Max == 0) ? ul : ul % ++Max;
+            return Max == 0 ? ul : ul % ++Max;
         }
 
         /// <summary>
@@ -373,7 +373,7 @@ namespace Z.JuimiTool.Common
         public long RangedRand64S(long Min, long Max)
         {
             if (Min == Max) { return Min; }
-            
+
             ulong u1, u2;
             u1 = (ulong)Min;
             u2 = (ulong)Max;
@@ -394,14 +394,14 @@ namespace Z.JuimiTool.Common
 
             if (banked32.Count > 0)
             {
-                return (Max == 0) ? banked32.Pop() : banked32.Pop() % ++Max;
+                return Max == 0 ? banked32.Pop() : banked32.Pop() % ++Max;
             }
             dec_curptr();
 
             uint ui = (uint)(ctx.rng_buf[ctx.rngbuf_curptr] & LOW32);
             banked32.Push((uint)((ctx.rng_buf[ctx.rngbuf_curptr] & HIGH32) >> 32));
 
-            return (Max == 0) ? ui : ui % ++Max;
+            return Max == 0 ? ui : ui % ++Max;
         }
 
         /// <summary>
@@ -429,7 +429,7 @@ namespace Z.JuimiTool.Common
         public int RangedRand32S(int Min, int Max)
         {
             if (Min == Max) { return Min; }
-            
+
             uint u1, u2;
             u1 = (uint)Min;
             u2 = (uint)Max;
@@ -450,16 +450,16 @@ namespace Z.JuimiTool.Common
 
             if (banked16.Count > 0)
             {
-                return (Max == 0) ? banked16.Pop() : (ushort)(banked16.Pop() % ++Max);
+                return Max == 0 ? banked16.Pop() : (ushort)(banked16.Pop() % ++Max);
             }
             dec_curptr();
 
             ushort us = Convert.ToUInt16(ctx.rng_buf[ctx.rngbuf_curptr] & LOW16);
 
             for (int i = 0; i < 3; i++)
-                banked16.Push(Convert.ToUInt16((ctx.rng_buf[ctx.rngbuf_curptr] & (ulong)(LOW16 << ((i + 1) * 16))) >> ((i + 1) * 16)));
+                banked16.Push(Convert.ToUInt16((ctx.rng_buf[ctx.rngbuf_curptr] & LOW16 << (i + 1) * 16) >> (i + 1) * 16));
 
-            return (Max == 0) ? us : (ushort)((uint)us % ++Max);
+            return Max == 0 ? us : (ushort)((uint)us % ++Max);
         }
 
         /// <summary>
@@ -474,7 +474,7 @@ namespace Z.JuimiTool.Common
             if (Max < Min) { (Min, Max) = (Max, Min); }
 
             ushort rmax = (ushort)(Max - Min);
-            ushort r = Rand16((ushort)rmax);
+            ushort r = Rand16(rmax);
             return (ushort)(r + Min);
         }
 
@@ -487,7 +487,7 @@ namespace Z.JuimiTool.Common
         public short RangedRand16S(short Min, short Max)
         {
             if (Min == Max) { return Min; }
-            
+
             ushort u1, u2;
             u1 = (ushort)Min;
             u2 = (ushort)Max;
@@ -508,16 +508,16 @@ namespace Z.JuimiTool.Common
 
             if (banked8.Count > 0)
             {
-                return (Max == 0) ? banked8.Pop() : (byte)(banked8.Pop() % ++Max);
+                return Max == 0 ? banked8.Pop() : (byte)(banked8.Pop() % ++Max);
             }
             dec_curptr();
 
             byte ub = Convert.ToByte(ctx.rng_buf[ctx.rngbuf_curptr] & LOW8);
 
             for (int i = 0; i < 7; i++)
-                banked8.Push(Convert.ToByte((ctx.rng_buf[ctx.rngbuf_curptr] & (ulong)(LOW8 << ((i + 1) * 8))) >> ((i + 1) * 8)));
+                banked8.Push(Convert.ToByte((ctx.rng_buf[ctx.rngbuf_curptr] & LOW8 << (i + 1) * 8) >> (i + 1) * 8));
 
-            return (Max == 0) ? ub : (byte)((uint)ub % ++Max);
+            return Max == 0 ? ub : (byte)((uint)ub % ++Max);
         }
 
         /// <summary>
@@ -545,7 +545,7 @@ namespace Z.JuimiTool.Common
         public sbyte RangedRand8S(sbyte Min, sbyte Max)
         {
             if (Min == Max) { return Min; }
-            
+
             byte u1, u2;
             u1 = (byte)Min;
             u2 = (byte)Max;
@@ -566,15 +566,15 @@ namespace Z.JuimiTool.Common
         public char RandAlphaNum(bool Upper = true, bool Lower = true, bool Numeric = true)
         {
             if (!Upper && !Lower && !Numeric) { throw new ArgumentException("You must select at least one character class in RandChar()"); }
-            
+
             const byte NUMERIC = 0x30;
             const byte UALPHA = 0x41;
             const byte LALPHA = 0x61;
 
-            byte rcnt = (Numeric) ? (byte)10 : (byte)0;
+            byte rcnt = Numeric ? (byte)10 : (byte)0;
 
-            if (Upper) { rcnt += (byte)26; }
-            if (Lower) { rcnt += (byte)26; }
+            if (Upper) { rcnt += 26; }
+            if (Lower) { rcnt += 26; }
 
             byte rnd = Rand8(--rcnt);
 
@@ -672,15 +672,15 @@ namespace Z.JuimiTool.Common
                 else if (Min == 0.0)
                     Min = MinZero;
             }
-                        
+
             Dub mz = new Dub(MinZero);
             Dub d1 = new Dub(Min);
             Dub d2 = new Dub(Max);
 
             // First, figure out what our sign is going to be
             // ->both ++ then +, both -- then -, one of each then random
-            bool rnd_neg = (d1.IsNeg == d2.IsNeg) ? d1.IsNeg : (RangedRand16S(short.MinValue, short.MaxValue) < 0);
-            bool same_sign = (d1.IsNeg == d2.IsNeg);
+            bool rnd_neg = d1.IsNeg == d2.IsNeg ? d1.IsNeg : RangedRand16S(short.MinValue, short.MaxValue) < 0;
+            bool same_sign = d1.IsNeg == d2.IsNeg;
 
             // Default to 0s for subnormals (exp is always 0)
             uint exp_min = 0;
@@ -709,14 +709,14 @@ namespace Z.JuimiTool.Common
                     // Max straddle the zero line we have to check
                     // which one we're randomizing toward
                     exp_min = mz.Exp;
-                    exp_max = (rnd_neg) ? d1.Exp : d2.Exp;
+                    exp_max = rnd_neg ? d1.Exp : d2.Exp;
                 }
 
                 new_exp = RangedRand32(exp_min, exp_max);
             }
-            
+
             // Work on the fractional part
-            ulong frac_min = (ulong)0;
+            ulong frac_min = 0;
             ulong frac_max = Dub.FRAC_BITS;
 
             // We only need to mess with the fraction ranges
@@ -747,16 +747,16 @@ namespace Z.JuimiTool.Common
                 }
 
                 // For integer powers of 2^n
-                if (frac_max == 0) { new_exp--; frac_min = (ulong)0; frac_max = Dub.FRAC_BITS; }
+                if (frac_max == 0) { new_exp--; frac_min = 0; frac_max = Dub.FRAC_BITS; }
             }
 
             // Build the new double
             ulong new_frac = RangedRand64(frac_min, frac_max);
             ulong d = new_frac;
             if (rnd_neg) d |= Dub.SIGN_BIT;
-            d |= ((ulong)new_exp << 52);
+            d |= (ulong)new_exp << 52;
 
-            return BitConverter.UInt64BitsToDouble(d);            
+            return BitConverter.UInt64BitsToDouble(d);
         }
 
         // Dub - work with doubles
@@ -765,27 +765,27 @@ namespace Z.JuimiTool.Common
             public static readonly int EXP_BIAS = 0x3ff;
             public static readonly uint EXP_MIN = 1;
             public static readonly uint EXP_MAX = 0x7fe;
-            public static readonly ulong SIGN_BIT = ((ulong)1 << 63);
-            public static readonly ulong FRAC_BITS = (ulong)0xF_FFFF_FFFF_FFFF;
+            public static readonly ulong SIGN_BIT = (ulong)1 << 63;
+            public static readonly ulong FRAC_BITS = 0xF_FFFF_FFFF_FFFF;
 
             private bool _neg;
             private uint _exp;
             private ulong _frac;
 
             public bool IsNeg { get { return _neg; } }
-            public uint Exp { get { return _exp; } }  
-            public bool HasNegExp { get { return (_exp < EXP_BIAS); } }
+            public uint Exp { get { return _exp; } }
+            public bool HasNegExp { get { return _exp < EXP_BIAS; } }
             public int UnbiasedExp { get { return (int)_exp - EXP_BIAS; } }
             public ulong Frac { get { return _frac; } }
-            
+
             public Dub(double InDub)
             {
                 ulong db = BitConverter.DoubleToUInt64Bits(InDub);
-                
+
                 _neg = (db & SIGN_BIT) != 0;
-                _exp = (uint)(((db & ~SIGN_BIT) & ~FRAC_BITS) >> 52);
-                _frac = (db & FRAC_BITS);
-            }            
+                _exp = (uint)((db & ~SIGN_BIT & ~FRAC_BITS) >> 52);
+                _frac = db & FRAC_BITS;
+            }
         }
     }
 }

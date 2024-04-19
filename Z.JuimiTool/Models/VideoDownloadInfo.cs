@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Z.JuimiTool.Models
+namespace Z.JiumiTool.Models
 {
     public class VideoDownloadInfo
     {

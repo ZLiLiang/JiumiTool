@@ -1,4 +1,4 @@
-﻿namespace Z.JuimiTool.Common
+﻿namespace Z.JiumiTool.Common
 {
     public interface IConfigureService
     {

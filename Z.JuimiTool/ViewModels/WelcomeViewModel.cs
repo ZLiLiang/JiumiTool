@@ -3,7 +3,7 @@ using System.Windows.Threading;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 
-namespace Z.JuimiTool.ViewModels
+namespace Z.JiumiTool.ViewModels
 {
     public class WelcomeViewModel : BindableBase, IDialogAware
     {

@@ -4,10 +4,10 @@ using System.Windows;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Services.Dialogs;
-using Z.JuimiTool.Common;
-using Z.JuimiTool.IServices;
-using Z.JuimiTool.Services;
-using Z.JuimiTool.ViewModels;
+using Z.JiumiTool.Common;
+using Z.JiumiTool.IServices;
+using Z.JiumiTool.Services;
+using Z.JiumiTool.ViewModels;
 using Z.JuimiTool.Views;
 
 namespace Z.JuimiTool
@@ -23,6 +23,7 @@ namespace Z.JuimiTool
             containerRegistry.Register<IFileService, FileService>();
             containerRegistry.Register<IFolderService, FolderService>();
             containerRegistry.RegisterSingleton<IHttpsProxyService, HttpsProxyService>();
+            containerRegistry.RegisterSingleton<IDownloadService, DownloadService>();
 
             //弹窗
             containerRegistry.RegisterDialog<WelcomeView, WelcomeViewModel>();

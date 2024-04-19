@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Z.JuimiTool.Constants
+namespace Z.JiumiTool.Constants
 {
     public static class ScriptPath
     {

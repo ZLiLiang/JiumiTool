@@ -5,9 +5,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Org.BouncyCastle.Asn1.Cmp;
-using Z.JuimiTool.IServices;
+using Z.JiumiTool.IServices;
 
-namespace Z.JuimiTool.Services
+namespace Z.JiumiTool.Services
 {
     public class DownloadService : IDownloadService
     {

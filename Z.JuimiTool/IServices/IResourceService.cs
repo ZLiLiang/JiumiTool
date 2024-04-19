@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Z.JuimiTool.Models;
+using Z.JiumiTool.Models;
 
-namespace Z.JuimiTool.IServices
+namespace Z.JiumiTool.IServices
 {
     public interface IResourceService
     {

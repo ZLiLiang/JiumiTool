@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Z.JuimiTool.IServices
+namespace Z.JiumiTool.IServices
 {
     public interface IDownloadService
     {

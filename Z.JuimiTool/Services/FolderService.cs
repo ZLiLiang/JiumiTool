@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Controls;
-using Z.JuimiTool.Extensions;
-using Z.JuimiTool.IServices;
-using Z.JuimiTool.Models;
+using Z.JiumiTool.Extensions;
+using Z.JiumiTool.IServices;
+using Z.JiumiTool.Models;
 
-namespace Z.JuimiTool.Services
+namespace Z.JiumiTool.Services
 {
     public class FolderService : IFolderService
     {

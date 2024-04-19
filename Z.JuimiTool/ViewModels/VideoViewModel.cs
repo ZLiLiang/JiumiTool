@@ -3,10 +3,10 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using Prism.Commands;
 using Prism.Mvvm;
-using Z.JuimiTool.IServices;
-using Z.JuimiTool.Models;
+using Z.JiumiTool.IServices;
+using Z.JiumiTool.Models;
 
-namespace Z.JuimiTool.ViewModels
+namespace Z.JiumiTool.ViewModels
 {
     public class VideoViewModel : BindableBase
     {

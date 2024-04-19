@@ -1,10 +1,10 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
-using Z.JuimiTool.Common;
-using Z.JuimiTool.Constants;
+using Z.JiumiTool.Common;
+using Z.JiumiTool.Constants;
 
-namespace Z.JuimiTool.ViewModels
+namespace Z.JiumiTool.ViewModels
 {
     public class MainViewModel : BindableBase, IConfigureService
     {

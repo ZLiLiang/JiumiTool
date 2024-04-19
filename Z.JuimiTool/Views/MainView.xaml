@@ -115,8 +115,8 @@
                     Margin="16,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    FontSize="14"
-                    Text="啾咪小工具" />
+                    FontSize="14" />
+                <!--  Text="啾咪小工具" />  -->
             </DockPanel>
 
             <ContentControl Grid.Row="1" prism:RegionManager.RegionName="ContentRegion" />
