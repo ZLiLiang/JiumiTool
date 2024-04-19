@@ -28,12 +28,9 @@ namespace Z.JiumiTool.Services
             proxyServer = new ProxyServer();
             //使用Windows证书生成引擎
             proxyServer.CertificateManager.CertificateEngine = CertificateEngine.DefaultWindows;
-            proxyServer.CertificateManager.RootCertificateName = "JiumiCert";
+            proxyServer.CertificateManager.RootCertificateName = "Jiumi";
             //启用证书
             proxyServer.CertificateManager.EnsureRootCertificate();
-            proxyServer.AddEndPoint(explicitProxyEndPoint);
-            //设置系统代理
-            proxyServer.SetAsSystemHttpsProxy(explicitProxyEndPoint);
         }
 
         public void Start()
@@ -45,6 +42,9 @@ namespace Z.JiumiTool.Services
 
             //启动代理
             proxyServer.Start();
+            proxyServer.AddEndPoint(explicitProxyEndPoint);
+            //设置系统代理
+            proxyServer.SetAsSystemHttpsProxy(explicitProxyEndPoint);
         }
 
         public void Stop()
@@ -56,6 +56,9 @@ namespace Z.JiumiTool.Services
 
             //停止代理
             proxyServer.Stop();
+            //禁止系统代理
+            proxyServer.DisableSystemHttpsProxy();
+            proxyServer.RemoveEndPoint(explicitProxyEndPoint);
         }
 
         #region 资源释放
