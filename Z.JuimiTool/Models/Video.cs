@@ -1,40 +1,42 @@
-﻿namespace Z.JuimiTool.Models
+﻿using System.Windows.Media.Imaging;
+
+namespace Z.JuimiTool.Models
 {
     public class Video
     {
         /// <summary>
-        /// 上传者
+        /// 封面数据
         /// </summary>
-        public string Uploader { get; set; }
+        public BitmapImage ImageData { get; set; }
 
         /// <summary>
-        /// 描述
+        /// 简略描述
         /// </summary>
-        public string Description { get; set; }
+        public string BriefTitle { get; set; }
+
+        /// <summary>
+        /// 完整描述
+        /// </summary>
+        public string WholeTitle { get; set; }
+
+        /// <summary>
+        /// 视频时长
+        /// </summary>
+        public int VideoPlayLength { get; set; }
 
         /// <summary>
         /// 大小
         /// </summary>
-        public string Size { get; set; }
+        public long Size { get; set; }
 
         /// <summary>
-        /// 封面链接
+        /// 作者
         /// </summary>
-        public string ThumbUrl { get; set; }
+        public string Uploader { get; set; }
 
         /// <summary>
-        /// 下载链接
+        /// 视频保存路径
         /// </summary>
-        public string Url { get; set; }
-
-        /// <summary>
-        /// 密钥
-        /// </summary>
-        public ulong Decodekey { get; set; }
-
-        /// <summary>
-        /// 解密数组
-        /// </summary>
-        public byte[] DecryptionArray { get; set; }
+        public string VideoSavePath { get; set; }
     }
 }
