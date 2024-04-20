@@ -104,7 +104,7 @@ namespace Z.JiumiTool.Services
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, url);
             requestMessage.Headers.Add("Host", "finder.video.qq.com");
             requestMessage.Headers.Add("Connection", "keep-alive");
-            requestMessage.Headers.UserAgent.TryParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) WindowsWechat(0x63090a13) XWEB/9105 Flue");
+            requestMessage.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
             requestMessage.Headers.Add("Accept", "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8");
             requestMessage.Headers.Add("Sec-Fetch-Site", "same-site");
             requestMessage.Headers.Add("Sec-Fetch-Mode", "no-cors");
@@ -122,7 +122,7 @@ namespace Z.JiumiTool.Services
             var requestMessage = new HttpRequestMessage(HttpMethod.Head, url);
             requestMessage.Headers.Host = "finder.video.qq.com";
             requestMessage.Headers.Connection.Add("keep-alive");
-            requestMessage.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) WindowsWechat(0x63090a13) XWEB/9105 Flue");
+            requestMessage.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
             requestMessage.Headers.Accept.ParseAdd("*/*");
             requestMessage.Headers.Add("Origin", "https://channels.weixin.qq.com");
             requestMessage.Headers.Add("Sec-Fetch-Site", "same-site");
@@ -142,7 +142,7 @@ namespace Z.JiumiTool.Services
             requestMessage.Headers.Host = "finder.video.qq.com";
             requestMessage.Headers.Connection.Add("keep-alive");
             requestMessage.Headers.Accept.ParseAdd("application/json, text/plain, */*");
-            requestMessage.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 NetType/WIFI MicroMessenger/7.0.20.1781(0x6700143B) WindowsWechat(0x63090a13) XWEB/9105 Flue");
+            requestMessage.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
             requestMessage.Headers.Add("Origin", "https://channels.weixin.qq.com");
             requestMessage.Headers.Add("Sec-Fetch-Site", "same-site");
             requestMessage.Headers.Add("Sec-Fetch-Mode", "no-cors");

@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Win32;
@@ -27,7 +30,7 @@ namespace Z.JiumiTool.ViewModels
         private readonly Dispatcher uiDispatcher;
         private ObservableCollection<Video> videos = new ObservableCollection<Video>();
         private ObservableCollection<string> message = new ObservableCollection<string>();
-        private ObservableCollection<Video> selectedVideos = new ObservableCollection<Video>();
+        private List<Video> selectedVideos = new List<Video>();
 
         public bool IsStartEnabled { get => isStartEnabled; set => SetProperty(ref isStartEnabled, value); }
         public bool IsStopEnabled { get => isStopEnabled; set => SetProperty(ref isStopEnabled, value); }
@@ -51,20 +54,11 @@ namespace Z.JiumiTool.ViewModels
             set { message = value; RaisePropertyChanged(); }
         }
 
-        /// <summary>
-        /// 选中的视频
-        /// </summary>
-        public ObservableCollection<Video> SelectedVideos
-        {
-            get { return selectedVideos; }
-            set { selectedVideos = value; RaisePropertyChanged(); }
-        }
-
-
         public DelegateCommand StartCommand { get; set; }
         public DelegateCommand StopCommand { get; set; }
         public DelegateCommand DownloadCommand { get; set; }
         public DelegateCommand PathCommand { get; set; }
+        public DelegateCommand<SelectionChangedEventArgs> SelectionChangedCommand { get; set; }
 
         public VideoViewModel(IHttpsProxyService httpsProxyService, IDownloadService downloadService)
         {
@@ -72,6 +66,7 @@ namespace Z.JiumiTool.ViewModels
             StopCommand = new DelegateCommand(StopExecute);
             DownloadCommand = new DelegateCommand(DownloadExecute);
             PathCommand = new DelegateCommand(PathExecute);
+            SelectionChangedCommand = new DelegateCommand<SelectionChangedEventArgs>(SelectionChangedExecute);
             uiDispatcher = Dispatcher.CurrentDispatcher;
 
             this.httpsProxyService = httpsProxyService;
@@ -112,24 +107,31 @@ namespace Z.JiumiTool.ViewModels
         /// </summary>
         private async void DownloadExecute()
         {
-            if (SelectedVideos.Any())
+            try
             {
-                MessageBox.Show("请选中下载视频", "Tips");
-                return;
+                if (selectedVideos.Count == 0)
+                {
+                    throw new ArgumentNullException("selectedVideos", "请选中下载视频");
+                }
+
+                if (string.IsNullOrWhiteSpace(savePath))
+                {
+                    throw new ArgumentNullException("savePath", "请选中下载路径");
+                }
+
+                foreach (var item in selectedVideos)
+                {
+                    var videoPath = Path.Combine(savePath, $"{item.BriefTitle}.mp4");
+                    Message.Add($"开始下载：{item.BriefTitle}.mp4");
+
+                    var result = await downloadService.DownloadVideo(videoPath, item.Url, item.DecryptionArray);
+
+                    Message.Add($"下载成功：{result}");
+                }
             }
-
-            if (string.IsNullOrWhiteSpace(savePath))
+            catch (Exception ex)
             {
-                MessageBox.Show("请选中下载路径", "Tips");
-                return;
-            }
-
-            foreach (var item in SelectedVideos)
-            {
-                var videoPath = Path.Combine(savePath, item.BriefTitle);
-                var result = await downloadService.DownloadVideo(videoPath, item.Url, item.DecryptionArray);
-
-                Message.Add($"下载成功：{result}");
+                MessageBox.Show(ex.Message, "Tips");
             }
         }
 
@@ -146,6 +148,35 @@ namespace Z.JiumiTool.ViewModels
             }
         }
 
+        /// <summary>
+        /// 多选事件
+        /// </summary>
+        /// <param name="e"></param>
+        private void SelectionChangedExecute(SelectionChangedEventArgs e)
+        {
+            // 遍历已选中的项
+            foreach (var addedItem in e.AddedItems)
+            {
+                if (addedItem is Video selected)
+                {
+                    // 如果是新添加的选中项，添加到SelectedList
+                    if (!selectedVideos.Contains(selected))
+                    {
+                        selectedVideos.Add(selected);
+                    }
+                }
+            }
+
+            foreach (var removedItem in e.RemovedItems)
+            {
+                if (removedItem is Video deselected)
+                {
+                    // 如果是从选中状态移除的项，从SelectedList中移除
+                    selectedVideos.Remove(deselected);
+                }
+            }
+        }
+
         #endregion
 
         #region 私有方法
@@ -156,41 +187,51 @@ namespace Z.JiumiTool.ViewModels
         /// <param name="info"></param>
         private async void AddVideo(VideoDownloadInfo info)
         {
-            foreach (var item in Videos)
+            try
             {
-                if (string.Equals(item.Key, info.Key))
+
+
+                foreach (var item in Videos)
                 {
-                    return;
+                    if (string.Equals(item.Key, info.Key))
+                    {
+                        return;
+                    }
                 }
-            }
 
-            var imageBytes = await downloadService.DownloadImage(info.ThumbUrl);
+                var imageBytes = await downloadService.DownloadImage(info.ThumbUrl);
 
-            await uiDispatcher.InvokeAsync(() =>
-            {
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad; // 在加载完成后释放原始流
-                bitmapImage.StreamSource = new MemoryStream(imageBytes);
-                bitmapImage.EndInit();
-
-                var briefTitle = info.Description.Split('\n').First();
-
-                var video = new Video
+                await uiDispatcher.InvokeAsync(() =>
                 {
-                    Key = info.Key,
-                    ImageData = bitmapImage,
-                    BriefTitle = briefTitle,
-                    WholeTitle = info.Description,
-                    VideoPlayLength = info.VideoPlayLength,
-                    Size = info.Size / 1024 / 1024,
-                    Uploader = info.Uploader,
-                    Url = info.Url,
-                    DecryptionArray = info.DecryptionArray
-                };
+                    var bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad; // 在加载完成后释放原始流
+                    bitmapImage.StreamSource = new MemoryStream(imageBytes);
+                    bitmapImage.EndInit();
 
-                Videos.Add(video);
-            });
+                    var briefTitle = info.Description.Split('\n').First();
+
+                    var video = new Video
+                    {
+                        Key = info.Key,
+                        ImageData = bitmapImage,
+                        BriefTitle = briefTitle,
+                        WholeTitle = info.Description,
+                        VideoPlayLength = info.VideoPlayLength,
+                        Size = info.Size / 1024 / 1024,
+                        Uploader = info.Uploader,
+                        Url = info.Url,
+                        DecryptionArray = info.DecryptionArray
+                    };
+
+                    Videos.Add(video);
+                });
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message, "Tips");
+            }
         }
 
         #endregion
