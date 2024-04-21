@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using JiumiTool2.Views;
 using Wpf.Ui.Controls;
 
@@ -64,6 +66,7 @@ namespace JiumiTool2.ViewModels
             ];
 
             _isInitialized = true;
+            
         }
     }
 }

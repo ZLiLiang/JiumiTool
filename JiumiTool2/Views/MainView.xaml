@@ -30,16 +30,17 @@
         <ui:NavigationView
             x:Name="RootNavigation"
             Grid.Row="1"
+            BreadcrumbBar="{Binding ElementName=BreadcrumbBar}"
             FooterMenuItemsSource="{Binding ViewModel.NavigationFooter, Mode=OneWay}"
             IsBackButtonVisible="Collapsed"
             IsPaneOpen="False"
             MenuItemsSource="{Binding ViewModel.NavigationItems, Mode=OneWay}"
-            OpenPaneLength="200">
+            OpenPaneLength="200"
+            SelectionChanged="OnNavigationSelectionChanged">
             <ui:NavigationView.Header>
-                <ui:BreadcrumbBar
-                    Margin="42,32,0,0"
-                    FontSize="28"
-                    FontWeight="DemiBold" />
+                <StackPanel Margin="22,12,0,0">
+                    <ui:BreadcrumbBar x:Name="BreadcrumbBar" />
+                </StackPanel>
             </ui:NavigationView.Header>
         </ui:NavigationView>
 

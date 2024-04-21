@@ -1,28 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
+using JiumiTool2.ViewModels;
+using Wpf.Ui.Controls;
 
 namespace JiumiTool2.Views
 {
     /// <summary>
     /// JiumiView.xaml 的交互逻辑
     /// </summary>
-    public partial class JiumiView : Page
+    public partial class JiumiView : INavigableView<JiumiViewModel>
     {
-        public JiumiView()
+        public JiumiViewModel ViewModel { get; }
+
+        public JiumiView(JiumiViewModel viewModel)
         {
+            ViewModel = viewModel;
+            DataContext = this;
+
             InitializeComponent();
         }
+
     }
 }

@@ -51,6 +51,11 @@ namespace JiumiTool2
 
                 // Views and ViewModels
                 services.AddSingleton<JiumiView>();
+                services.AddSingleton<JiumiViewModel>();
+                services.AddSingleton<FileView>();
+                services.AddSingleton<FileViewModel>();
+                services.AddSingleton<VideoView>();
+                services.AddSingleton<VideoViewModel>();
                 services.AddSingleton<SettingsView>();
                 services.AddSingleton<SettingsViewModel>();
             })

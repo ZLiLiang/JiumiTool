@@ -65,5 +65,20 @@ namespace JiumiTool2.Views
 
             Application.Current.Shutdown();
         }
+
+        private void OnNavigationSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            if (sender is not NavigationView navigationView)
+            {
+                return;
+            }
+
+            navigationView.SetCurrentValue(
+                NavigationView.HeaderVisibilityProperty,
+                navigationView.SelectedItem?.TargetPageType != typeof(JiumiView)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed
+            );
+        }
     }
 }
