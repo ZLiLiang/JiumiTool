@@ -20,6 +20,22 @@ namespace JiumiTool2.ViewModels
         [ObservableProperty]
         private ObservableCollection<object> _navigationFooter = [];
 
+        [RelayCommand]
+        private void NavigationSelectionChanged(object sender)
+        {
+            if (sender is not NavigationView navigationView)
+            {
+                return;
+            }
+
+            navigationView.SetCurrentValue(
+                NavigationView.HeaderVisibilityProperty,
+                navigationView.SelectedItem?.TargetPageType != typeof(JiumiView)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed
+            );
+        }
+
         public MainViewModel()
         {
             if (!_isInitialized)
