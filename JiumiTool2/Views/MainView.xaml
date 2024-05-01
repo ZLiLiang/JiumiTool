@@ -38,7 +38,7 @@
             OpenPaneLength="200">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
-                    <i:InvokeCommandAction Command="{Binding NavigationSelectionChangedCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" />
+                    <i:InvokeCommandAction Command="{Binding ViewModel.NavigationSelectionChangedCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ui:NavigationView}}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <ui:NavigationView.Header>
