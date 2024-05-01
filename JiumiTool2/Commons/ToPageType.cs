@@ -2,7 +2,7 @@
 
 namespace JiumiTool2.Commons
 {
-    public class NameToPageTypeConverter
+    public class ToPageType
     {
         private static readonly Type[] PageTypes = Assembly
         .GetExecutingAssembly()
