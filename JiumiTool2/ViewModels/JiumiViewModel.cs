@@ -22,7 +22,7 @@ namespace JiumiTool2.ViewModels
                 return;
             }
 
-            Type? pageType = NameToPageTypeConverter.Convert(parameter);
+            Type? pageType = ToPageType.Convert(parameter);
 
             if (pageType == null)
             {
