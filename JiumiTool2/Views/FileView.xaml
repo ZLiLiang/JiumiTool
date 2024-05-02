@@ -44,11 +44,14 @@
                 <ui:TextBox
                     Grid.Column="0"
                     Margin="5"
-                    PlaceholderText="Try doing something..." />
+                    IsReadOnly="True"
+                    PlaceholderText="Try doing something..."
+                    Text="{Binding ViewModel.ModifyPath}" />
                 <ui:Button
                     Grid.Column="1"
                     Width="140"
                     Margin="5"
+                    Command="{Binding ViewModel.SelectedPathCommand}"
                     Content="选择路径"
                     Icon="{ui:SymbolIcon Fluent24}" />
             </Grid>
@@ -96,23 +99,24 @@
                         <ComboBox
                             Width="140"
                             Margin="5,5,5,10"
-                            SelectedIndex="0">
-                            <ComboBoxItem Content="文件模式" />
-                            <ComboBoxItem Content="文件夹模式" />
-                        </ComboBox>
+                            ItemsSource="{Binding ViewModel.Modes}"
+                            SelectedIndex="{Binding ViewModel.SelectedMode}" />
                         <ui:Button
                             Width="140"
                             Margin="5,10,5,10"
+                            Command="{Binding ViewModel.ExecuteModifiedCommand}"
                             Content="执行修改"
                             Icon="{ui:SymbolIcon DocumentEdit24}" />
                         <CheckBox
                             Width="140"
                             Margin="5,10,5,10"
-                            Content="进行备份" />
+                            Content="进行备份"
+                            IsChecked="{Binding ViewModel.IsBackup}" />
                     </StackPanel>
                     <ui:Button
                         Width="140"
                         Margin="5"
+                        Command="{Binding ViewModel.ModifySettingCommand}"
                         Content="设置"
                         DockPanel.Dock="Bottom"
                         Icon="{ui:SymbolIcon TextboxSettings24}" />
