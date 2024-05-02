@@ -4,6 +4,8 @@
     {
         public string ApplicationTheme { get; set; }
 
-        public string SavePath { get; set; }
+        public FileOptions FileOptions { get; set; }
+
+        public VideoOptions VideoOptions { get; set; }
     }
 }
