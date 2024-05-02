@@ -48,5 +48,9 @@
             </ui:NavigationView.Header>
         </ui:NavigationView>
 
+        <ContentPresenter
+            x:Name="RootContentDialog"
+            Grid.Row="0"
+            Grid.RowSpan="2" />
     </Grid>
 </ui:FluentWindow>

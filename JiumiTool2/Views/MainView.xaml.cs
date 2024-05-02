@@ -22,7 +22,8 @@ namespace JiumiTool2.Views
         public MainView(MainViewModel viewModel,
                         IPageService pageService,
                         INavigationService navigationService,
-                        IAppsettingsService appsettingsService)
+                        IAppsettingsService appsettingsService,
+                        IContentDialogService contentDialogService)
         {
 
             _appsettingsService = appsettingsService;
@@ -30,11 +31,12 @@ namespace JiumiTool2.Views
             DataContext = this;
 
             SystemThemeWatcher.Watch(this);
-
+            
             InitializeComponent();
 
             SetPageService(pageService);
             navigationService.SetNavigationControl(RootNavigation);
+            contentDialogService.SetDialogHost(RootContentDialog);
 
             var theme = _appsettingsService.GetAppsettings().ApplicationTheme.ToEnum<ApplicationTheme>();
             ApplicationThemeManager.Apply(theme);
