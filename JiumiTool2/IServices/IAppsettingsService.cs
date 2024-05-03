@@ -6,6 +6,6 @@ namespace JiumiTool2.IServices
     {
         public Appsettings GetAppsettings();
 
-        public Task UpdateAppsettingsAsync(string key, string value);
+        public Task UpdateAppsettingsAsync(Action<Appsettings> action);
     }
 }

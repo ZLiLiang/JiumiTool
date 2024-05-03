@@ -35,7 +35,10 @@ namespace JiumiTool2.ViewModels
 
                     ApplicationThemeManager.Apply(ApplicationTheme.Light);
                     CurrentApplicationTheme = ApplicationTheme.Light;
-                    _appsettingsService.UpdateAppsettingsAsync("ApplicationTheme", ApplicationTheme.Light.ToString());
+                    _appsettingsService.UpdateAppsettingsAsync(appsettings =>
+                    {
+                        appsettings.ApplicationTheme = ApplicationTheme.Light.ToString();
+                    });
 
                     break;
 
@@ -47,7 +50,10 @@ namespace JiumiTool2.ViewModels
 
                     ApplicationThemeManager.Apply(ApplicationTheme.Dark);
                     CurrentApplicationTheme = ApplicationTheme.Dark;
-                    _appsettingsService.UpdateAppsettingsAsync("ApplicationTheme", ApplicationTheme.Dark.ToString());
+                    _appsettingsService.UpdateAppsettingsAsync(appsettings =>
+                    {
+                        appsettings.ApplicationTheme = ApplicationTheme.Dark.ToString();
+                    });
 
                     break;
             }
@@ -63,7 +69,7 @@ namespace JiumiTool2.ViewModels
 
         public void OnNavigatedFrom()
         {
-            
+
         }
 
         private void InitializeViewModel()
