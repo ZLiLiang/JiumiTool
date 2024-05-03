@@ -2,7 +2,7 @@
 
 namespace JiumiTool2.Constants
 {
-    public enum ModifyMode
+    public enum FileModifyMode
     {
         [Description("文件模式")]
         File,
