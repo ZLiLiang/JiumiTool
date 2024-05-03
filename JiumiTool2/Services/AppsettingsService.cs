@@ -22,10 +22,10 @@ namespace JiumiTool2.Services
 
         public async Task UpdateAppsettingsAsync(Action<Appsettings> action)
         {
-            // 确保使用正确的路径
+            // 配置文件路径
             string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
 
-            // 读取JSON文件到MyAppSettings对象
+            // 读取JSON文件到Appsettings对象
             var content = await File.ReadAllTextAsync(configPath);
             var appSettings = JsonConvert.DeserializeObject<Appsettings>(content);
 
