@@ -1,7 +1,4 @@
-﻿using JiumiTool2.Constants;
-using JiumiTool2.Extensions;
-using JiumiTool2.IServices;
-using JiumiTool2.ViewModels;
+﻿using JiumiTool2.IServices;
 using Wpf.Ui.Controls;
 
 namespace JiumiTool2.Views
@@ -11,21 +8,33 @@ namespace JiumiTool2.Views
     /// </summary>
     public partial class FileConfigDialog : ContentDialog
     {
-        private FileConfigDialogModel _viewModel;
         private IAppsettingsService _appsettingsService;
 
-        public FileConfigDialog(FileConfigDialogModel fileConfigDialogModel, IAppsettingsService appsettingsService)
+        /// <summary>
+        /// 用于存储起始项目的索引
+        /// </summary>
+        private int startIndex, endIndex;
+
+        /// <summary>
+        /// 用于标记是否正在选择范围
+        /// </summary>
+        private bool isSelectingRange = false;
+
+        public FileConfigDialog( IAppsettingsService appsettingsService)
         {
-            _viewModel = fileConfigDialogModel;
             _appsettingsService = appsettingsService;
 
-            DataContext = _viewModel;
             InitializeComponent();
+        }
+
+        private void OnListBoxSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+
         }
 
         protected override void OnButtonClick(ContentDialogButton button)
         {
-            if (_viewModel.FileNameChars.Count == 0 && button == ContentDialogButton.Primary)
+            if (button == ContentDialogButton.Primary)
             {
                 var messageBox = new MessageBox
                 {
@@ -37,7 +46,6 @@ namespace JiumiTool2.Views
                 return;
             }
 
-            _viewModel.FileName = string.Empty;
 
             base.OnButtonClick(button);
         }

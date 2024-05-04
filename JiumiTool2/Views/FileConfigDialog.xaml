@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:commons="clr-namespace:JiumiTool2.Commons"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:JiumiTool2.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
@@ -12,7 +11,6 @@
     <ui:ContentDialog.Resources>
         <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:FileConfigDialog}" />
         <commons:StringToArrayConverter x:Key="StringToArrayConverter" />
-        <commons:EqualityConverter x:Key="EqualityConverter" />
     </ui:ContentDialog.Resources>
     <Grid Width="450">
         <Grid.RowDefinitions>
@@ -26,8 +24,7 @@
             Grid.Row="0"
             Margin="5"
             ClearButtonEnabled="True"
-            PlaceholderText="输入需要修改的名称"
-            Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged}" />
+            PlaceholderText="输入需要修改的名称" />
 
         <Border
             Grid.Row="1"
@@ -42,17 +39,16 @@
                     <GradientStop Offset="1" Color="#FF9089" />
                 </LinearGradientBrush>
             </Border.BorderBrush>
-            <ListBox ItemsSource="{Binding ElementName=textBox, Path=Text, Converter={StaticResource StringToArrayConverter}}" SelectionMode="Multiple">
+            <ListBox
+                x:Name="listBox"
+                ItemsSource="{Binding ElementName=textBox, Path=Text, Converter={StaticResource StringToArrayConverter}}"
+                SelectionChanged="OnListBoxSelectionChanged"
+                SelectionMode="Multiple">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="SelectionChanged">
-                        <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}" PassEventArgsToCommand="True" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
             </ListBox>
         </Border>
 
@@ -65,13 +61,13 @@
                 VerticalContentAlignment="Center"
                 Content="匹配模式：" />
             <RadioButton
+                x:Name="prefixMatch"
                 Content="前缀"
-                GroupName="Match"
-                IsChecked="{Binding SelectedOption, Converter={StaticResource EqualityConverter}, ConverterParameter=前缀}" />
+                GroupName="Match" />
             <RadioButton
+                x:Name="suffixMatch"
                 Content="后缀"
-                GroupName="Match"
-                IsChecked="{Binding SelectedOption, Converter={StaticResource EqualityConverter}, ConverterParameter=后缀}" />
+                GroupName="Match" />
         </StackPanel>
 
     </Grid>
