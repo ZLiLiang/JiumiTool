@@ -43,7 +43,7 @@
                 x:Name="listBox"
                 ItemsSource="{Binding ElementName=textBox, Path=Text, Converter={StaticResource StringToArrayConverter}}"
                 SelectionChanged="OnListBoxSelectionChanged"
-                SelectionMode="Multiple">
+                SelectionMode="Extended">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -63,7 +63,8 @@
             <RadioButton
                 x:Name="prefixMatch"
                 Content="前缀"
-                GroupName="Match" />
+                GroupName="Match"
+                IsChecked="True" />
             <RadioButton
                 x:Name="suffixMatch"
                 Content="后缀"

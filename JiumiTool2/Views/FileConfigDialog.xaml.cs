@@ -1,4 +1,6 @@
-﻿using JiumiTool2.IServices;
+﻿using System.Windows.Controls;
+using JiumiTool2.Constants;
+using JiumiTool2.IServices;
 using Wpf.Ui.Controls;
 
 namespace JiumiTool2.Views
@@ -13,46 +15,115 @@ namespace JiumiTool2.Views
         /// <summary>
         /// 用于存储起始项目的索引
         /// </summary>
-        private int startIndex, endIndex;
+        private int _startIndex, _endIndex;
 
         /// <summary>
         /// 用于标记是否正在选择范围
         /// </summary>
-        private bool isSelectingRange = false;
+        private bool _isSelectingRange = false;
 
-        public FileConfigDialog( IAppsettingsService appsettingsService)
+        /// <summary>
+        /// 标记是否在处理选项
+        /// </summary>
+        private bool _isHandlingSelectionChange = false;
+
+        /// <summary>
+        /// 匹配字符数组
+        /// </summary>
+        private List<char> _matchArray = new();
+
+        public FileConfigDialog(IAppsettingsService appsettingsService)
         {
             _appsettingsService = appsettingsService;
 
             InitializeComponent();
         }
 
-        private void OnListBoxSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void OnListBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (_isHandlingSelectionChange == true)
+                return;
 
+            _isHandlingSelectionChange = true;
+
+            if (e.AddedItems.Count >= 0 && _isSelectingRange == false)
+            {
+                _isSelectingRange = true;
+                _startIndex = listBox.SelectedIndex;
+                // 清理选中列表
+                listBox.SelectedItems.Clear();
+
+                // 设置选中项
+                var selectedItem = listBox.ItemContainerGenerator.ContainerFromIndex(_startIndex) as ListBoxItem;
+                selectedItem.IsSelected = true;
+            }
+            else if (e.AddedItems.Count > 0 && _isSelectingRange == true)
+            {
+                _isSelectingRange = false;
+                _endIndex = listBox.SelectedIndex;
+                _matchArray.Clear();
+
+                int start = 0, end = 0;
+                if (_startIndex < _endIndex)
+                {
+                    start = _startIndex;
+                    end = _endIndex;
+                }
+                else
+                {
+                    start = _endIndex;
+                    end = _startIndex;
+                }
+
+                for (int i = start; i <= end; i++)
+                {
+                    // 设置选中项
+                    var selectedItem = listBox.ItemContainerGenerator.ContainerFromIndex(i) as ListBoxItem;
+                    selectedItem.IsSelected = true;
+                    _matchArray.Add((char)selectedItem.Content);
+                }
+            }
+
+            _isHandlingSelectionChange = false;
+
+            if (e.RemovedItems.Count > 0)
+            {
+
+            }
         }
 
         protected override void OnButtonClick(ContentDialogButton button)
         {
-            if (button == ContentDialogButton.Primary)
+            if (button == ContentDialogButton.Primary && _matchArray.Count == 0)
             {
                 var messageBox = new MessageBox
                 {
                     Title = "提示",
-                    Content = "不能为空！            ",
+                    Content = "请选择匹配范围！",
                     CloseButtonText = "确认"
                 };
                 messageBox.ShowDialogAsync();
                 return;
             }
 
+            string pattern = string.Join(string.Empty, _matchArray);
+            string seat = FileModifySeat.Prefix.ToString();
+            if (prefixMatch.IsChecked == true)
+            {
+                seat = FileModifySeat.Prefix.ToString();
+            }
+            else
+            {
+                seat = FileModifySeat.Suffix.ToString();
+            }
+
+            _appsettingsService.UpdateAppsettingsAsync(action =>
+            {
+                action.FileOptions.Pattern = pattern;
+                action.FileOptions.Seat = seat;
+            });
 
             base.OnButtonClick(button);
         }
-
-        //private string GetMatchString(List<char> chars, FileModifySeat modifySeat)
-        //{
-
-        //}
     }
 }
