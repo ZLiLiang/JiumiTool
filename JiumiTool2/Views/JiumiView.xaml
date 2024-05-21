@@ -53,11 +53,11 @@
                         <ui:TextBlock
                             FontTypography="Title"
                             Foreground="#FFFFFF"
-                            Text="陈妍 你好" />
-                        <ui:TextBlock
+                            Text="Hello 你好" />
+                        <!--<ui:TextBlock
                             FontTypography="Subtitle"
                             Foreground="#B7FFFFFF"
-                            Text="Hello YanChen" />
+                            Text="Hello YanChen" />-->
                         <ui:TextBlock
                             FontTypography="BodyStrong"
                             Foreground="#B7FFFFFF"
