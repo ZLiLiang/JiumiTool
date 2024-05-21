@@ -106,27 +106,28 @@ namespace JiumiTool2.Views
                 messageBox.ShowDialogAsync();
                 return;
             }
-
-            // 模板
-            string pattern = string.Join(string.Empty, _matchArray);
-            // 位置
-            string seat = FileModifySeat.Prefix.ToString();
-            if (prefixMatch.IsChecked == true)
+            else if(button == ContentDialogButton.Primary)
             {
-                seat = FileModifySeat.Prefix.ToString();
+                // 模板
+                string pattern = string.Join(string.Empty, _matchArray);
+                // 位置
+                string seat = FileModifySeat.Prefix.ToString();
+                if (prefixMatch.IsChecked == true)
+                {
+                    seat = FileModifySeat.Prefix.ToString();
+                }
+                else
+                {
+                    seat = FileModifySeat.Suffix.ToString();
+                }
+
+                WeakReferenceMessenger.Default.Send("UpdateMessage", "FileViewModel");
+                await _appsettingsService.UpdateAppsettingsAsync(action =>
+                {
+                    action.FileOptions.Pattern = pattern;
+                    action.FileOptions.Seat = seat;
+                });
             }
-            else
-            {
-                seat = FileModifySeat.Suffix.ToString();
-            }
-
-            WeakReferenceMessenger.Default.Send("UpdateMessage", "FileViewModel");
-            await _appsettingsService.UpdateAppsettingsAsync(action =>
-            {
-                action.FileOptions.Pattern = pattern;
-                action.FileOptions.Seat = seat;
-            });
-
             base.OnButtonClick(button);
         }
     }
