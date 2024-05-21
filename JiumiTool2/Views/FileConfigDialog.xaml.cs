@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using CommunityToolkit.Mvvm.Messaging;
 using JiumiTool2.Constants;
 using JiumiTool2.IServices;
 using Wpf.Ui.Controls;
@@ -119,6 +120,7 @@ namespace JiumiTool2.Views
                 seat = FileModifySeat.Suffix.ToString();
             }
 
+            WeakReferenceMessenger.Default.Send("UpdateMessage", "FileViewModel");
             await _appsettingsService.UpdateAppsettingsAsync(action =>
             {
                 action.FileOptions.Pattern = pattern;
