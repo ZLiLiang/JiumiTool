@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls;
-using CommunityToolkit.Mvvm.Messaging;
 using JiumiTool2.Constants;
 using JiumiTool2.IServices;
 using Wpf.Ui.Controls;
@@ -93,7 +92,7 @@ namespace JiumiTool2.Views
             }
         }
 
-        protected override async void OnButtonClick(ContentDialogButton button)
+        protected override void OnButtonClick(ContentDialogButton button)
         {
             if (button == ContentDialogButton.Primary && _matchArray.Count == 0)
             {
@@ -107,9 +106,7 @@ namespace JiumiTool2.Views
                 return;
             }
 
-            // 模板
             string pattern = string.Join(string.Empty, _matchArray);
-            // 位置
             string seat = FileModifySeat.Prefix.ToString();
             if (prefixMatch.IsChecked == true)
             {
@@ -120,13 +117,12 @@ namespace JiumiTool2.Views
                 seat = FileModifySeat.Suffix.ToString();
             }
 
-            await _appsettingsService.UpdateAppsettingsAsync(action =>
+            _appsettingsService.UpdateAppsettingsAsync(action =>
             {
                 action.FileOptions.Pattern = pattern;
                 action.FileOptions.Seat = seat;
             });
 
-            WeakReferenceMessenger.Default.Send("UpdateMessage", "FileViewModel");
             base.OnButtonClick(button);
         }
     }

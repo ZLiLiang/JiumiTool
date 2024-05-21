@@ -2,12 +2,11 @@
 using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using JiumiTool2.Constants;
 using JiumiTool2.Extensions;
-using JiumiTool2.IServices;
 using JiumiTool2.Views;
 using Wpf.Ui;
+using Wpf.Ui.Controls;
 
 namespace JiumiTool2.ViewModels
 {
@@ -15,24 +14,11 @@ namespace JiumiTool2.ViewModels
     {
         private IContentDialogService _contentDialogService;
         private FileConfigDialog _fileConfigDialog;
-        private IAppsettingsService _appsettingsService;
 
-        public FileViewModel(IContentDialogService contentDialogService,
-                             FileConfigDialog fileConfigDialog,
-                             IAppsettingsService appsettingsService)
+        public FileViewModel(IContentDialogService contentDialogService, FileConfigDialog fileConfigDialog)
         {
             _contentDialogService = contentDialogService;
             _fileConfigDialog = fileConfigDialog;
-            _appsettingsService = appsettingsService;
-
-            WeakReferenceMessenger.Default.Register<FileViewModel,string,string>(this, "FileViewModel", (recipient, message) =>
-            {
-                if (message.Equals("UpdateMessage"))
-                {
-                    recipient.UpdateMessage();
-                }
-            });
-            UpdateMessage();
         }
 
         [ObservableProperty]
@@ -48,7 +34,7 @@ namespace JiumiTool2.ViewModels
         private ObservableCollection<string> _messageItems = [];
 
         [ObservableProperty]
-        private List<string> _modes = EnumExtension.ToDescriptionList<FileModifyMode>();
+        private List<string> _modes = EnumExtension.ToDescriptionList<ModifyMode>();
 
         [RelayCommand]
         private void PageSizeChanged(object sender)
@@ -84,10 +70,10 @@ namespace JiumiTool2.ViewModels
         [RelayCommand]
         private async void ModifySetting()
         {
-            var title = (FileModifyMode)SelectedMode switch
+            var title = (ModifyMode)SelectedMode switch
             {
-                FileModifyMode.File => FileModifyMode.File.GetDescription(),
-                FileModifyMode.Folder => FileModifyMode.Folder.GetDescription(),
+                ModifyMode.File => ModifyMode.File.GetDescription(),
+                ModifyMode.Folder => ModifyMode.Folder.GetDescription(),
                 _ => ""
             };
 
@@ -96,15 +82,6 @@ namespace JiumiTool2.ViewModels
             _fileConfigDialog.CloseButtonText = "取消";
 
             await _contentDialogService.ShowAsync(_fileConfigDialog, default);
-        }
-
-        public void UpdateMessage()
-        {
-            var pattern = _appsettingsService.GetAppsettings().FileOptions.Pattern;
-            var seat = _appsettingsService.GetAppsettings().FileOptions.Seat.ToEnum<FileModifySeat>().GetDescription();
-
-            MessageItems.Add($"匹配模式:\"{pattern}\"");
-            MessageItems.Add($"匹配位置:\"{seat}\"");
         }
     }
 }
