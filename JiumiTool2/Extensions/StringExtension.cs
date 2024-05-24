@@ -18,6 +18,12 @@ namespace JiumiTool2.Extensions
             return result;
         }
 
+        /// <summary>
+        /// 描述转枚举值
+        /// </summary>
+        /// <typeparam name="TEnum"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static TEnum DescriptionToEnum<TEnum>(this string value)
         {
             var fieldInfos = typeof(TEnum).GetFields();
