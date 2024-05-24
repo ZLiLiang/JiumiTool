@@ -103,15 +103,16 @@ namespace JiumiTool2.Views
                     Content = "请选择匹配范围！",
                     CloseButtonText = "确认"
                 };
-                messageBox.ShowDialogAsync();
+                await messageBox.ShowDialogAsync();
                 return;
             }
-            else if(button == ContentDialogButton.Primary)
+            else if (button == ContentDialogButton.Primary)
             {
                 // 模板
                 string pattern = string.Join(string.Empty, _matchArray);
                 // 位置
                 string seat = FileModifySeat.Prefix.ToString();
+
                 if (prefixMatch.IsChecked == true)
                 {
                     seat = FileModifySeat.Prefix.ToString();
@@ -121,12 +122,13 @@ namespace JiumiTool2.Views
                     seat = FileModifySeat.Suffix.ToString();
                 }
 
-                WeakReferenceMessenger.Default.Send("UpdateMessage", "FileViewModel");
                 await _appsettingsService.UpdateAppsettingsAsync(action =>
                 {
                     action.FileOptions.Pattern = pattern;
                     action.FileOptions.Seat = seat;
                 });
+
+                WeakReferenceMessenger.Default.Send<string, string>("UpdateMessage", "FileViewModel");
             }
             base.OnButtonClick(button);
         }

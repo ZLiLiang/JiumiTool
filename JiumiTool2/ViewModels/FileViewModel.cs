@@ -12,7 +12,7 @@ using Wpf.Ui.Controls;
 
 namespace JiumiTool2.ViewModels
 {
-    public partial class FileViewModel : ObservableObject
+    public partial class FileViewModel : ObservableObject, IDisposable
     {
         private IContentDialogService _contentDialogService;
         private FileConfigDialog _fileConfigDialog;
@@ -26,14 +26,15 @@ namespace JiumiTool2.ViewModels
             _fileConfigDialog = fileConfigDialog;
             _appsettingsService = appsettingsService;
 
-            WeakReferenceMessenger.Default.Register<FileViewModel, string, string>(this, "FileViewModel", (recipient, message) =>
+            InitialMessage();
+
+            WeakReferenceMessenger.Default.Register<FileViewModel, string, string>(this, "FileViewModel", (instance, message) =>
             {
                 if (message.Equals("UpdateMessage"))
                 {
-                    recipient.UpdateMessage();
+                    instance.UpdateMessage();
                 }
             });
-            UpdateMessage();
         }
 
         [ObservableProperty]
@@ -102,13 +103,33 @@ namespace JiumiTool2.ViewModels
         /// <summary>
         /// 更新信息表
         /// </summary>
-        public void UpdateMessage()
+        private void InitialMessage()
         {
             var pattern = _appsettingsService.GetAppsettings().FileOptions.Pattern;
             var seat = _appsettingsService.GetAppsettings().FileOptions.Seat.ToEnum<FileModifySeat>().GetDescription();
 
             MessageItems.Add($"匹配模式:\"{pattern}\"");
             MessageItems.Add($"匹配位置:\"{seat}\"");
+        }
+
+        /// <summary>
+        /// 更新信息
+        /// </summary>
+        private void UpdateMessage()
+        {
+            Task.Delay(500).Wait();
+
+            var pattern = _appsettingsService.GetAppsettings().FileOptions.Pattern;
+            var seat = _appsettingsService.GetAppsettings().FileOptions.Seat.ToEnum<FileModifySeat>().GetDescription();
+
+            MessageItems.Add("============ Update Completed! ============");
+            MessageItems.Add($"匹配模式:\"{pattern}\"");
+            MessageItems.Add($"匹配位置:\"{seat}\"");
+        }
+
+        public void Dispose()
+        {
+            WeakReferenceMessenger.Default.Unregister<string, string>(this, "FileViewModel");
         }
     }
 }

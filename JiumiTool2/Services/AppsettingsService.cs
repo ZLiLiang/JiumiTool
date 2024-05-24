@@ -20,6 +20,28 @@ namespace JiumiTool2.Services
             return _optionsMonitor.CurrentValue;
         }
 
+        public IOptionsMonitor<Appsettings> GetOptionsMonitor()
+        {
+            return _optionsMonitor;
+        }
+
+        public void UpdateAppsettings(Action<Appsettings> action)
+        {
+            // 配置文件路径
+            string configPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+
+            // 读取JSON文件到Appsettings对象
+            var content = File.ReadAllText(configPath);
+            var appSettings = JsonConvert.DeserializeObject<Appsettings>(content);
+
+            // 修改属性值
+            action.Invoke(appSettings);
+
+            // 将更改保存回文件
+            var updatedContent = JsonConvert.SerializeObject(appSettings, Formatting.Indented);
+            File.WriteAllText(configPath, updatedContent);
+        }
+
         public async Task UpdateAppsettingsAsync(Action<Appsettings> action)
         {
             // 配置文件路径
