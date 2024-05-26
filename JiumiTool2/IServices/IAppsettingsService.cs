@@ -12,10 +12,11 @@ namespace JiumiTool2.IServices
         public Appsettings GetAppsettings();
 
         /// <summary>
-        /// 获取配置监视器
+        /// 配置发送改变时，回调通知函数
         /// </summary>
+        /// <param name="action"></param>
         /// <returns></returns>
-        public IOptionsMonitor<Appsettings> GetOptionsMonitor();
+        public IDisposable ChangeToNotification( Action action);
 
         /// <summary>
         /// 更新配置

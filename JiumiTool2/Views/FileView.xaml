@@ -106,7 +106,15 @@
                             Margin="5,10,5,10"
                             Command="{Binding ViewModel.ExecuteModifiedCommand}"
                             Content="执行修改"
-                            Icon="{ui:SymbolIcon DocumentEdit24}" />
+                            Icon="{ui:SymbolIcon DocumentEdit24}"
+                            IsEnabled="{Binding ViewModel.ModifyEnable}" />
+                        <ui:Button
+                            Width="140"
+                            Margin="5,10,5,10"
+                            Command="{Binding ViewModel.ExecuteClearedCommand}"
+                            Content="清除记录"
+                            Icon="{ui:SymbolIcon TextClearFormatting24}"
+                            IsEnabled="{Binding ViewModel.ClearEnable}" />
                         <CheckBox
                             Width="140"
                             Margin="5,10,5,10"

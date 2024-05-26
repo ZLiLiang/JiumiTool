@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -7,8 +8,8 @@ using JiumiTool2.Constants;
 using JiumiTool2.Extensions;
 using JiumiTool2.IServices;
 using JiumiTool2.Views;
+using Microsoft.Win32;
 using Wpf.Ui;
-using Wpf.Ui.Controls;
 
 namespace JiumiTool2.ViewModels
 {
@@ -28,6 +29,8 @@ namespace JiumiTool2.ViewModels
 
             InitialMessage();
 
+            _appsettingsService.ChangeToNotification(() => { });
+
             WeakReferenceMessenger.Default.Register<FileViewModel, string, string>(this, "FileViewModel", (instance, message) =>
             {
                 if (message.Equals("UpdateMessage"))
@@ -37,21 +40,56 @@ namespace JiumiTool2.ViewModels
             });
         }
 
+        #region 响应式私有字段
+
+        /// <summary>
+        /// 修改路径
+        /// </summary>
         [ObservableProperty]
         private string _modifyPath = string.Empty;
 
+        /// <summary>
+        /// 选择模式
+        /// </summary>
         [ObservableProperty]
         private int _selectedMode = 0;
 
+        /// <summary>
+        /// 启用修改按钮
+        /// </summary>
+        [ObservableProperty]
+        private bool _modifyEnable = false;
+
+        /// <summary>
+        /// 启用清除按钮
+        /// </summary>
+        [ObservableProperty]
+        private bool _clearEnable = false;
+
+        /// <summary>
+        /// 备份确认
+        /// </summary>
         [ObservableProperty]
         private bool _isBackup = false;
 
+        /// <summary>
+        /// 信息列表
+        /// </summary>
         [ObservableProperty]
         private ObservableCollection<string> _messageItems = [];
 
+        /// <summary>
+        /// 模式列表
+        /// </summary>
         [ObservableProperty]
         private List<string> _modes = EnumExtension.ToDescriptionList<FileModifyMode>();
 
+        #endregion
+
+        /// <summary>
+        /// 使listbox跟随窗体大小变化
+        /// </summary>
+        /// <param name="sender"></param>
         [RelayCommand]
         private void PageSizeChanged(object sender)
         {
@@ -71,10 +109,29 @@ namespace JiumiTool2.ViewModels
             messageListBox.Height = actualHeight - 2;
         }
 
+        /// <summary>
+        /// 选择文件(夹)路径
+        /// </summary>
         [RelayCommand]
         private void SelectedPath()
         {
-
+            OpenFolderDialog openFolderDialog = new OpenFolderDialog();
+            openFolderDialog.Multiselect = false;
+            openFolderDialog.Title = (FileModifyMode)SelectedMode == FileModifyMode.File ? "选择文件" : "选择文件夹";
+            if (openFolderDialog.ShowDialog() == true)
+            {
+                ModifyPath = openFolderDialog.FolderName;
+                if ((FileModifyMode)SelectedMode == FileModifyMode.File)
+                {
+                    LoadFileName();
+                }
+                else
+                {
+                    LoadFolderName();
+                }
+                ModifyEnable = true;
+                ClearEnable = true;
+            }
         }
 
         [RelayCommand]
@@ -83,6 +140,22 @@ namespace JiumiTool2.ViewModels
 
         }
 
+        /// <summary>
+        /// 清理记录
+        /// </summary>
+        [RelayCommand]
+        private void ExecuteCleared()
+        {
+            MessageItems.Clear();
+            InitialMessage();
+
+            ModifyEnable = false;
+            ClearEnable = false;
+        }
+
+        /// <summary>
+        /// 弹出配置窗口
+        /// </summary>
         [RelayCommand]
         private async void ModifySetting()
         {
@@ -125,6 +198,36 @@ namespace JiumiTool2.ViewModels
             MessageItems.Add("============ Update Completed! ============");
             MessageItems.Add($"匹配模式:\"{pattern}\"");
             MessageItems.Add($"匹配位置:\"{seat}\"");
+        }
+
+        /// <summary>
+        /// 加载文件名
+        /// </summary>
+        private void LoadFileName()
+        {
+            var files = Directory.GetFiles(ModifyPath);
+
+            MessageItems.Add("============ Loaded FileName! ============");
+            foreach (var item in files)
+            {
+                MessageItems.Add(item.Split('\\').Last());
+            }
+            MessageItems.Add(" ");
+        }
+
+        /// <summary>
+        /// 加载文件夹名
+        /// </summary>
+        private void LoadFolderName()
+        {
+            var folders = Directory.GetDirectories(ModifyPath);
+
+            MessageItems.Add("============ Loaded FolderName! ============");
+            foreach (var item in folders)
+            {
+                MessageItems.Add(item.Split('\\').Last());
+            }
+            MessageItems.Add(" ");
         }
 
         public void Dispose()
