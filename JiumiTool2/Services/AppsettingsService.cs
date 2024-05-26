@@ -22,13 +22,7 @@ namespace JiumiTool2.Services
 
         public IDisposable ChangeToNotification(Action action)
         {
-            var result = _optionsMonitor.OnChange((appsettings, name) =>
-            {
-                action();
-                Console.WriteLine(name);
-            });
-
-            return result;
+            throw new NotImplementedException();
         }
 
         public void UpdateAppsettings(Action<Appsettings> action)
