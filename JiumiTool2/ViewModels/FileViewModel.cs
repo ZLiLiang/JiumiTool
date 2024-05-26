@@ -29,14 +29,12 @@ namespace JiumiTool2.ViewModels
 
             InitialMessage();
 
-            _appsettingsService.ChangeToNotification(() => { });
-
             WeakReferenceMessenger.Default.Register<FileViewModel, string, string>(this, "FileViewModel", (instance, message) =>
             {
-                if (message.Equals("UpdateMessage"))
-                {
-                    instance.UpdateMessage();
-                }
+                var pattern = message.Split(',').First();
+                var seat = message.Split(',').Last().ToEnum<FileModifySeat>().GetDescription();
+
+                instance.UpdateMessage(pattern, seat);
             });
         }
 
@@ -188,13 +186,8 @@ namespace JiumiTool2.ViewModels
         /// <summary>
         /// 更新信息
         /// </summary>
-        private void UpdateMessage()
+        private void UpdateMessage(string pattern, string seat)
         {
-            Task.Delay(500).Wait();
-
-            var pattern = _appsettingsService.GetAppsettings().FileOptions.Pattern;
-            var seat = _appsettingsService.GetAppsettings().FileOptions.Seat.ToEnum<FileModifySeat>().GetDescription();
-
             MessageItems.Add("============ Update Completed! ============");
             MessageItems.Add($"匹配模式:\"{pattern}\"");
             MessageItems.Add($"匹配位置:\"{seat}\"");

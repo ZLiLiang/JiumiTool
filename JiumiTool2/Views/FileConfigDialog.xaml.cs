@@ -95,42 +95,55 @@ namespace JiumiTool2.Views
 
         protected override async void OnButtonClick(ContentDialogButton button)
         {
-            if (button == ContentDialogButton.Primary && _matchArray.Count == 0)
+            try
+            {
+                if (button == ContentDialogButton.Primary && _matchArray.Count == 0)
+                {
+                    var messageBox = new MessageBox
+                    {
+                        Title = "提示",
+                        Content = "请选择匹配范围！",
+                        CloseButtonText = "确认"
+                    };
+                    await messageBox.ShowDialogAsync();
+                    return;
+                }
+                else if (button == ContentDialogButton.Primary)
+                {
+                    // 模板
+                    string pattern = string.Join(string.Empty, _matchArray);
+                    // 位置
+                    string seat = FileModifySeat.Prefix.ToString();
+
+                    if (prefixMatch.IsChecked == true)
+                    {
+                        seat = FileModifySeat.Prefix.ToString();
+                    }
+                    else
+                    {
+                        seat = FileModifySeat.Suffix.ToString();
+                    }
+
+                    await _appsettingsService.UpdateAppsettingsAsync(action =>
+                    {
+                        action.FileOptions.Pattern = pattern;
+                        action.FileOptions.Seat = seat;
+                    });
+
+                    WeakReferenceMessenger.Default.Send<string, string>($"{pattern},{seat}", "FileViewModel");
+                }
+                base.OnButtonClick(button);
+            }
+            catch (Exception ex)
             {
                 var messageBox = new MessageBox
                 {
                     Title = "提示",
-                    Content = "请选择匹配范围！",
+                    Content = $"出现错误{ex.Message}",
                     CloseButtonText = "确认"
                 };
                 await messageBox.ShowDialogAsync();
-                return;
             }
-            else if (button == ContentDialogButton.Primary)
-            {
-                // 模板
-                string pattern = string.Join(string.Empty, _matchArray);
-                // 位置
-                string seat = FileModifySeat.Prefix.ToString();
-
-                if (prefixMatch.IsChecked == true)
-                {
-                    seat = FileModifySeat.Prefix.ToString();
-                }
-                else
-                {
-                    seat = FileModifySeat.Suffix.ToString();
-                }
-
-                await _appsettingsService.UpdateAppsettingsAsync(action =>
-                {
-                    action.FileOptions.Pattern = pattern;
-                    action.FileOptions.Seat = seat;
-                });
-
-                WeakReferenceMessenger.Default.Send<string, string>("UpdateMessage", "FileViewModel");
-            }
-            base.OnButtonClick(button);
         }
     }
 }
