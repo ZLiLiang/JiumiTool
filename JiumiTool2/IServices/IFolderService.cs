@@ -3,22 +3,21 @@ using JiumiTool2.Models;
 
 namespace JiumiTool2.IServices
 {
-    public interface IFileService
+    public interface IFolderService
     {
         /// <summary>
-        /// 获取路径下的文件
+        /// 获取路径下的文件夹
         /// </summary>
         /// <param name="path">单个路径</param>
         /// <returns></returns>
-        public List<File> GetFiles(string path);
+        public List<Folder> GetFolders(string path);
 
         /// <summary>
-        /// 获取多个路径的文件 <br/>
-        /// 路径包括文件夹和文件
+        /// 获取多个路径的文件夹
         /// </summary>
         /// <param name="paths">多个路径</param>
         /// <returns></returns>
-        public List<File> GetFiles(IEnumerable<string> paths);
+        public List<Folder> GetFolders(IEnumerable<string> paths);
 
         /// <summary>
         /// 重命名资源 

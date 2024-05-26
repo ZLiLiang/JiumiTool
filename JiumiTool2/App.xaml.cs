@@ -43,6 +43,8 @@ namespace JiumiTool2
                 services.AddSingleton<IAppsettingsService, AppsettingsService>();
                 services.AddSingleton<IContentDialogService, ContentDialogService>();
                 services.AddSingleton<IMatchRegexService, MatchRegexService>();
+                services.AddSingleton<IFileService, FileService>();
+                services.AddSingleton<IFolderService, FolderService>();
 
 
                 // Service containing navigation, same as INavigationWindow... but without window
