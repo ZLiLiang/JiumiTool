@@ -48,13 +48,10 @@ namespace JiumiTool2.ControlBehavior
                     {
                         notifyCollection.CollectionChanged += (sender, args) =>
                         {
-                            listBox.Dispatcher.BeginInvoke(new Action(() =>
+                            if (listBox.Items.Count > 0)
                             {
-                                if (listBox.Items.Count > 0)
-                                {
-                                    listBox.ScrollIntoView(listBox.Items[listBox.Items.Count - 1]);
-                                }
-                            }));
+                                listBox.ScrollIntoView(listBox.Items[listBox.Items.Count - 1]);
+                            }
                         };
                     }
                 };

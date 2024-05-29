@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -10,22 +11,32 @@ using JiumiTool2.IServices;
 using JiumiTool2.Views;
 using Microsoft.Win32;
 using Wpf.Ui;
+using Wpf.Ui.Controls;
 
 namespace JiumiTool2.ViewModels
 {
     public partial class FileViewModel : ObservableObject, IDisposable
     {
-        private IContentDialogService _contentDialogService;
-        private FileConfigDialog _fileConfigDialog;
-        private IAppsettingsService _appsettingsService;
+        private readonly IContentDialogService _contentDialogService;
+        private readonly FileConfigDialog _fileConfigDialog;
+        private readonly IAppsettingsService _appsettingsService;
+        private readonly IMatchRegexService _matchRegexService;
+        private readonly IFileService _fileService;
+        private readonly IFolderService _folderService;
 
         public FileViewModel(IContentDialogService contentDialogService,
                              FileConfigDialog fileConfigDialog,
-                             IAppsettingsService appsettingsService)
+                             IAppsettingsService appsettingsService,
+                             IMatchRegexService matchRegexService,
+                             IFileService fileService,
+                             IFolderService folderService)
         {
             _contentDialogService = contentDialogService;
             _fileConfigDialog = fileConfigDialog;
             _appsettingsService = appsettingsService;
+            _matchRegexService = matchRegexService;
+            _fileService = fileService;
+            _folderService = folderService;
 
             InitialMessage();
 
@@ -133,9 +144,57 @@ namespace JiumiTool2.ViewModels
         }
 
         [RelayCommand]
-        private void ExecuteModified()
+        private async Task ExecuteModifiedAsync()
         {
+            try
+            {
+                var chars = _appsettingsService.GetAppsettings().FileOptions.Pattern.ToList();
+                var seat = _appsettingsService.GetAppsettings().FileOptions.Seat.ToEnum<FileModifySeat>();
+                // 构建匹配模板
+                var pattern = _matchRegexService.GeneratePattern(chars);
+                // 构建正则对象
+                var regex = _matchRegexService.GenerateRegex(pattern, seat);
 
+                // 添加信息
+                void AddRange(List<string> result)
+                {
+                    foreach (var item in result)
+                    {
+                        MessageItems.Add(item);
+                    }
+                }
+
+                if ((FileModifyMode)SelectedMode == FileModifyMode.File)
+                {
+                    var filePaths = _fileService.GetFiles(ModifyPath);
+                    if (IsBackup == true)
+                    {
+                        _fileService.Backup(filePaths);
+                    }
+                    var result = _fileService.RepeatName(filePaths, regex);
+                    AddRange(result);
+                }
+                else
+                {
+                    var folderPaths = _folderService.GetFolders(ModifyPath);
+                    if (IsBackup == true)
+                    {
+                        _folderService.Backup(folderPaths);
+                    }
+                    var result = _folderService.RepeatName(folderPaths, regex);
+                    AddRange(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                var messageBox = new MessageBox
+                {
+                    Title = "提示",
+                    Content = $"出现错误{ex.Message}",
+                    CloseButtonText = "确认"
+                };
+                await messageBox.ShowDialogAsync();
+            }
         }
 
         /// <summary>
@@ -170,6 +229,8 @@ namespace JiumiTool2.ViewModels
 
             await _contentDialogService.ShowAsync(_fileConfigDialog, default);
         }
+
+        #region 私有方法
 
         /// <summary>
         /// 更新信息表
@@ -222,6 +283,8 @@ namespace JiumiTool2.ViewModels
             }
             MessageItems.Add(" ");
         }
+
+        #endregion
 
         public void Dispose()
         {
