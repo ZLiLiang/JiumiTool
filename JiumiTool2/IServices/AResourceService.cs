@@ -16,7 +16,7 @@ namespace JiumiTool2.IServices
         /// <returns>路径列表</returns>
         public List<string> RepeatName(IEnumerable<Resource> resources, Regex regex, Action<string, string> action)
         {
-            int startCount = 1;
+            int count = 1;
             List<string> result = new List<string>();
 
             foreach (Resource item in resources)
@@ -29,17 +29,34 @@ namespace JiumiTool2.IServices
 
                 var srcFullName = item.FullName;
                 // 对资源名进行重命名并编号
-                var destName = regex.Replace(item.Name, evaluator =>
+                //var destName = regex.Replace(item.Name, evaluator =>
+                //{
+                //    return count.ToString();
+                //});
+                var match = regex.Match(item.Name);
+                if (match.Success)
                 {
-                    return startCount.ToString();
-                });
-                var destFullName = Path.Combine(item.Path, destName);
+                    var destName = item.Name;
+                    // 计算匹配项的起始位置和长度，以确定替换范围
+                    int startIndex = match.Index;
+                    int length = match.Length;
 
-                // 重命名资源
-                action.Invoke(srcFullName, destFullName);
-                result.Add(string.Join(" -> ", item.Name, destName));
+                    destName = destName.Substring(0, startIndex) + count + destName.Substring(startIndex + length);
+                    var destFullName = Path.Combine(item.Path, destName);
 
-                startCount++;
+                    // 重命名资源
+                    action.Invoke(srcFullName, destFullName);
+                    result.Add(string.Join(" -> ", item.Name, destName));
+
+                    count++;
+                }
+                //var destFullName = Path.Combine(item.Path, destName);
+
+                //// 重命名资源
+                //action.Invoke(srcFullName, destFullName);
+                //result.Add(string.Join(" -> ", item.Name, destName));
+
+                //count++;
             }
 
             return result;
@@ -54,7 +71,7 @@ namespace JiumiTool2.IServices
         /// <returns>路径</returns>
         public string Backup(IEnumerable<Resource> resources, Action<string, string> action)
         {
-            var backUpPath = $"{resources.First().Path}\\备份-{DateTime.Now:yyyy/MM/dd HH:mm:ss}";
+            var backUpPath = $"{resources.First().Path}\\备份-{DateTime.Now:yyyy-MM-dd}";
             // 创建目录
             Directory.CreateDirectory(backUpPath);
 
