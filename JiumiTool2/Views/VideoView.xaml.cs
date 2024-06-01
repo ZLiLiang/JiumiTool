@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
+using JiumiTool2.ViewModels;
 
 namespace JiumiTool2.Views
 {
@@ -20,8 +8,13 @@ namespace JiumiTool2.Views
     /// </summary>
     public partial class VideoView : Page
     {
-        public VideoView()
+        public VideoViewModel ViewModel { get; set; }
+
+        public VideoView(VideoViewModel viewModel)
         {
+            ViewModel = viewModel;
+            DataContext = this;
+
             InitializeComponent();
         }
     }

@@ -65,6 +65,7 @@ namespace JiumiTool2
                 services.AddSingleton<SettingsViewModel>();
 
                 services.AddSingleton<FileConfigDialog>();
+                services.AddSingleton<VideoConfigDialog>();
             })
             .Build();
 
