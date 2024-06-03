@@ -2,5 +2,6 @@
 {
     public class VideoOptions
     {
+        public string DownloadPath { get; set; }
     }
 }
