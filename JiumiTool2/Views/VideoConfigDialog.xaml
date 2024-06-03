@@ -8,9 +8,24 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     mc:Ignorable="d">
     <ui:ContentDialog.Resources>
-        <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:FileConfigDialog}" />
+        <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:VideoConfigDialog}" />
     </ui:ContentDialog.Resources>
-    <Grid>
-        <TextBlock Text="1111" />
+
+    <Grid Width="450" Height="50">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <ui:TextBox
+            x:Name="PathTextBox"
+            Grid.Column="0"
+            Margin="5"
+            IsReadOnly="True"
+            PlaceholderText="Try doing something..." />
+        <ui:Button
+            Grid.Column="1"
+            Margin="5"
+            Click="SelectDownloadPath"
+            Content="选择下载路径" />
     </Grid>
 </ui:ContentDialog>
