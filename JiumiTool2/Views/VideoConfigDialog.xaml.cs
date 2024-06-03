@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows.Media;
 using JiumiTool2.IServices;
 using Microsoft.Win32;
 using Wpf.Ui;
@@ -12,27 +13,25 @@ namespace JiumiTool2.Views
     public partial class VideoConfigDialog : ContentDialog
     {
         private readonly IAppsettingsService _appsettingsService;
-        private readonly ISnackbarService _snackbarService;
 
-        public VideoConfigDialog(IAppsettingsService appsettingsService, ISnackbarService snackbarService)
+        public VideoConfigDialog(IAppsettingsService appsettingsService)
         {
             InitializeComponent();
 
             _appsettingsService = appsettingsService;
-            _snackbarService = snackbarService;
         }
 
         protected override async void OnButtonClick(ContentDialogButton button)
         {
-            if (Directory.Exists(PathTextBox.Text) == false)
+            if (button == ContentDialogButton.Primary && Directory.Exists(PathTextBox.Text) == false)
             {
-                _snackbarService.Show(
-                    "错误",
-                    "路径不存在！",
-                    ControlAppearance.Danger,
-                    new SymbolIcon(SymbolRegular.Fluent24),
-                    TimeSpan.FromSeconds(1.5)
-                    );
+                MessageBox messageBox = new MessageBox
+                {
+                    Title = "错误",
+                    Content = "路径不存在！",
+                    CloseButtonText="确认"
+                };
+                await messageBox.ShowDialogAsync();
                 return;
             }
             else if (button == ContentDialogButton.Primary)

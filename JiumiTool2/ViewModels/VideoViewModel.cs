@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using JiumiTool2.Models;
 using JiumiTool2.Views;
 using Wpf.Ui;
+using Wpf.Ui.Controls;
 
 namespace JiumiTool2.ViewModels
 {
@@ -43,7 +44,7 @@ namespace JiumiTool2.ViewModels
         [RelayCommand]
         private void ExecuteMonitor()
         {
-
+            DownloadEnable = true;
         }
 
         /// <summary>
@@ -52,7 +53,11 @@ namespace JiumiTool2.ViewModels
         [RelayCommand]
         private void ExecuteDownload()
         {
-
+            if (BeginMonitor == true)
+            {
+                MessageBox messageBox = new MessageBox();
+                
+            }
         }
 
         /// <summary>
@@ -82,7 +87,7 @@ namespace JiumiTool2.ViewModels
             }
 
             // 使用FindName方法查找子元素
-            ListView messageListBox = currentPage.FindName("VideoListView") as ListView;
+            Wpf.Ui.Controls.ListView messageListBox = currentPage.FindName("VideoListView") as Wpf.Ui.Controls.ListView;
             Border messageBorder = currentPage.FindName("VideoBorder") as Border;
 
             messageListBox.Height = 0;
