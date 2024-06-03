@@ -22,6 +22,7 @@ namespace JiumiTool2.Views
         public MainView(MainViewModel viewModel,
                         IPageService pageService,
                         INavigationService navigationService,
+                        ISnackbarService snackbarService,
                         IAppsettingsService appsettingsService,
                         IContentDialogService contentDialogService)
         {
@@ -35,6 +36,7 @@ namespace JiumiTool2.Views
             InitializeComponent();
 
             SetPageService(pageService);
+            snackbarService.SetSnackbarPresenter(SnackbarPresenter);
             navigationService.SetNavigationControl(RootNavigation);
             contentDialogService.SetDialogHost(RootContentDialog);
 
