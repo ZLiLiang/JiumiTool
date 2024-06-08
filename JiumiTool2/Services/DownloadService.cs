@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using CommunityToolkit.Mvvm.Messaging.Messages;
 using JiumiTool2.IServices;
 
 namespace JiumiTool2.Services
@@ -9,20 +8,18 @@ namespace JiumiTool2.Services
     public class DownloadService : IDownloadService
     {
         private readonly HttpClient _httpClient;
-        private readonly HttpRequestMessage _httpRequestMessage;
 
         public DownloadService()
         {
             _httpClient = new();
-            _httpRequestMessage = new();
         }
 
         public async Task<byte[]> DownloadImage(string url)
         {
             // 构建请求信息
-            SetImageRequestMessage(url);
+            var request = GetImageRequestMessage(url);
             // 发送请求
-            var response = await _httpClient.SendAsync(_httpRequestMessage);
+            var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
             // 读取响应的数据
             var result = await response.Content.ReadAsByteArrayAsync();
@@ -33,9 +30,9 @@ namespace JiumiTool2.Services
         public async Task<string> DownloadVideo(string url, string outputPath, byte[] decryptionArray)
         {
             // 构建请求信息
-            SetVideoFirstRequestMessage(url);
+            var firstRequest = GetVideoFirstRequestMessage(url);
             // 发送请求
-            var fristResponse = await _httpClient.SendAsync(_httpRequestMessage);
+            var fristResponse = await _httpClient.SendAsync(firstRequest);
             fristResponse.EnsureSuccessStatusCode();
 
             // 获取完整视频的总长度
@@ -57,9 +54,9 @@ namespace JiumiTool2.Services
                 long endPosition = Math.Min(downloadedSize + 262143, totalSize - 1);
 
                 // 构建请求信息
-                SetVideoPartRequestMessage(url, startPosition, endPosition);
+                var partRequest = GetVideoPartRequestMessage(url, startPosition, endPosition);
                 // 获取视频部分数据
-                var partResponse = await _httpClient.SendAsync(_httpRequestMessage);
+                var partResponse = await _httpClient.SendAsync(partRequest);
                 partResponse.EnsureSuccessStatusCode();
 
                 // 获取响应体的流
@@ -98,9 +95,9 @@ namespace JiumiTool2.Services
         public async Task<string> DownloadVideo(string url, string outputPath, byte[] decryptionArray, IProgress<double> progress)
         {
             // 构建请求信息
-            SetVideoFirstRequestMessage(url);
+            var firstRequest = GetVideoFirstRequestMessage(url);
             // 发送请求
-            var fristResponse = await _httpClient.SendAsync(_httpRequestMessage);
+            var fristResponse = await _httpClient.SendAsync(firstRequest);
             fristResponse.EnsureSuccessStatusCode();
 
             // 获取完整视频的总长度
@@ -122,9 +119,9 @@ namespace JiumiTool2.Services
                 long endPosition = Math.Min(downloadedSize + 262143, totalSize - 1);
 
                 // 构建请求信息
-                SetVideoPartRequestMessage(url, startPosition, endPosition);
+                var partRequest = GetVideoPartRequestMessage(url, startPosition, endPosition);
                 // 获取视频部分数据
-                var partResponse = await _httpClient.SendAsync(_httpRequestMessage);
+                var partResponse = await _httpClient.SendAsync(partRequest);
                 partResponse.EnsureSuccessStatusCode();
 
                 // 获取响应体的流
@@ -164,66 +161,63 @@ namespace JiumiTool2.Services
         #region 私有方法
 
         /// <summary>
-        /// 设置图片请求头
+        /// 获取图片请求头
         /// </summary>
-        private void SetImageRequestMessage(string url)
+        private HttpRequestMessage GetImageRequestMessage(string url)
         {
-            _httpRequestMessage.Method = HttpMethod.Get;
-            _httpRequestMessage.RequestUri = new Uri(url);
+            HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
 
-            _httpRequestMessage.Headers.Clear();
+            httpRequest.Headers.Add("Host", "finder.video.qq.com");
+            httpRequest.Headers.Add("Connection", "keep-alive");
+            httpRequest.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
+            httpRequest.Headers.Add("Accept", "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8");
+            httpRequest.Headers.Add("Sec-Fetch-Site", "same-site");
+            httpRequest.Headers.Add("Sec-Fetch-Mode", "no-cors");
+            httpRequest.Headers.Add("Sec-Fetch-Dest", "image");
+            httpRequest.Headers.Add("Referer", "https://channels.weixin.qq.com/");
 
-            _httpRequestMessage.Headers.Add("Host", "finder.video.qq.com");
-            _httpRequestMessage.Headers.Add("Connection", "keep-alive");
-            _httpRequestMessage.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
-            _httpRequestMessage.Headers.Add("Accept", "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8");
-            _httpRequestMessage.Headers.Add("Sec-Fetch-Site", "same-site");
-            _httpRequestMessage.Headers.Add("Sec-Fetch-Mode", "no-cors");
-            _httpRequestMessage.Headers.Add("Sec-Fetch-Dest", "image");
-            _httpRequestMessage.Headers.Add("Referer", "https://channels.weixin.qq.com/");
+            return httpRequest;
         }
 
         /// <summary>
-        /// 设置视频第一次请求头
+        /// 获取视频第一次请求头
         /// </summary>
-        private void SetVideoFirstRequestMessage(string url)
+        private HttpRequestMessage GetVideoFirstRequestMessage(string url)
         {
-            _httpRequestMessage.Method = HttpMethod.Head;
-            _httpRequestMessage.RequestUri = new Uri(url);
+            HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Head, url);
 
-            _httpRequestMessage.Headers.Clear();
+            httpRequest.Headers.Host = "finder.video.qq.com";
+            httpRequest.Headers.Connection.Add("keep-alive");
+            httpRequest.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
+            httpRequest.Headers.Accept.ParseAdd("*/*");
+            httpRequest.Headers.Add("Origin", "https://channels.weixin.qq.com");
+            httpRequest.Headers.Add("Sec-Fetch-Site", "same-site");
+            httpRequest.Headers.Add("Sec-Fetch-Mode", "no-cors");
+            httpRequest.Headers.Add("Sec-Fetch-Dest", "empty");
+            httpRequest.Headers.Referrer = new Uri("https://channels.weixin.qq.com/");
 
-            _httpRequestMessage.Headers.Host = "finder.video.qq.com";
-            _httpRequestMessage.Headers.Connection.Add("keep-alive");
-            _httpRequestMessage.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
-            _httpRequestMessage.Headers.Accept.ParseAdd("*/*");
-            _httpRequestMessage.Headers.Add("Origin", "https://channels.weixin.qq.com");
-            _httpRequestMessage.Headers.Add("Sec-Fetch-Site", "same-site");
-            _httpRequestMessage.Headers.Add("Sec-Fetch-Mode", "no-cors");
-            _httpRequestMessage.Headers.Add("Sec-Fetch-Dest", "empty");
-            _httpRequestMessage.Headers.Referrer = new Uri("https://channels.weixin.qq.com/");
+            return httpRequest;
         }
 
         /// <summary>
-        /// 设置视频后续请求头
+        /// 获取视频后续请求头
         /// </summary>
-        private void SetVideoPartRequestMessage(string url, long startPosition, long endPosition)
+        private HttpRequestMessage GetVideoPartRequestMessage(string url, long startPosition, long endPosition)
         {
-            _httpRequestMessage.Method = HttpMethod.Get;
-            _httpRequestMessage.RequestUri = new Uri(url);
+            HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
 
-            _httpRequestMessage.Headers.Clear();
+            httpRequest.Headers.Host = "finder.video.qq.com";
+            httpRequest.Headers.Connection.Add("keep-alive");
+            httpRequest.Headers.Accept.ParseAdd("application/json, text/plain, */*");
+            httpRequest.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
+            httpRequest.Headers.Add("Origin", "https://channels.weixin.qq.com");
+            httpRequest.Headers.Add("Sec-Fetch-Site", "same-site");
+            httpRequest.Headers.Add("Sec-Fetch-Mode", "no-cors");
+            httpRequest.Headers.Add("Sec-Fetch-Dest", "empty");
+            httpRequest.Headers.Referrer = new Uri("https://channels.weixin.qq.com/");
+            httpRequest.Headers.Range = new RangeHeaderValue(startPosition, endPosition);
 
-            _httpRequestMessage.Headers.Host = "finder.video.qq.com";
-            _httpRequestMessage.Headers.Connection.Add("keep-alive");
-            _httpRequestMessage.Headers.Accept.ParseAdd("application/json, text/plain, */*");
-            _httpRequestMessage.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36");
-            _httpRequestMessage.Headers.Add("Origin", "https://channels.weixin.qq.com");
-            _httpRequestMessage.Headers.Add("Sec-Fetch-Site", "same-site");
-            _httpRequestMessage.Headers.Add("Sec-Fetch-Mode", "no-cors");
-            _httpRequestMessage.Headers.Add("Sec-Fetch-Dest", "empty");
-            _httpRequestMessage.Headers.Referrer = new Uri("https://channels.weixin.qq.com/");
-            _httpRequestMessage.Headers.Range = new RangeHeaderValue(startPosition, endPosition);
+            return httpRequest;
         }
 
         #endregion
