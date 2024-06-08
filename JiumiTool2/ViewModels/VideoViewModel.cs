@@ -1,7 +1,14 @@
 ﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using JiumiTool2.Commons;
+using JiumiTool2.Extensions;
+using JiumiTool2.IServices;
 using JiumiTool2.Models;
 using JiumiTool2.Views;
 using Wpf.Ui;
@@ -12,7 +19,11 @@ namespace JiumiTool2.ViewModels
     public partial class VideoViewModel : ObservableObject
     {
         private readonly IContentDialogService _contentDialogService;
+        private readonly IHttpsProxyService _httpsProxyService;
+        private readonly IDownloadService _downloadService;
         private readonly VideoConfigDialog _videoConfigDialog;
+        private readonly VideoDownloadDialog _videoDownloadDialog;
+        private readonly Dispatcher _dispatcher = Dispatcher.CurrentDispatcher;
 
         /// <summary>
         /// 开始监视
@@ -24,7 +35,7 @@ namespace JiumiTool2.ViewModels
         /// 启用下载按钮
         /// </summary>
         [ObservableProperty]
-        private bool _downloadEnable = false;
+        private bool _downloadEnable = true;
 
         /// <summary>
         /// 视频列表
@@ -32,10 +43,46 @@ namespace JiumiTool2.ViewModels
         [ObservableProperty]
         private ObservableCollection<Video> _videoItems = new();
 
-        public VideoViewModel(IContentDialogService contentDialogService, VideoConfigDialog videoConfigDialog)
+        public VideoViewModel(IContentDialogService contentDialogService,
+                              VideoConfigDialog videoConfigDialog,
+                              VideoDownloadDialog videoDownloadDialog,
+                              IHttpsProxyService httpsProxyService,
+                              IDownloadService downloadService)
         {
             _contentDialogService = contentDialogService;
             _videoConfigDialog = videoConfigDialog;
+            _videoDownloadDialog = videoDownloadDialog;
+            _httpsProxyService = httpsProxyService;
+            _downloadService = downloadService;
+
+            WeakReferenceMessenger.Default.Register<VideoViewModel, InjectionResult, string>(this, "injectionResult", (recipient, message) =>
+            {
+                var isContain = recipient.VideoItems.Any(video => video.Url.Split("&token=")[0].Equals(message.Url.Split("&token=")[0]));
+                if (isContain == true) return;
+
+                _dispatcher.InvokeAsync(async () =>
+                {
+                    using MemoryStream stream = new MemoryStream(await _downloadService.DownloadImage(message.ThumbUrl));
+                    var image = new BitmapImage();
+                    image.BeginInit();
+                    // 在加载完成后释放原始流
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.StreamSource = stream;
+                    image.EndInit();
+
+                    var video = new Video
+                    {
+                        ImageData = image,
+                        Description = message.Description,
+                        VideoPlayLength = message.VideoPlayLength,
+                        Size = message.Size / 1024 / 1024,
+                        Uploader = message.Uploader,
+                        Url = message.Url,
+                        DecryptionArray = new Rng(message.Decodekey).GetDecryptionArray()
+                    };
+                    recipient.VideoItems.Add(video);
+                });
+            });
         }
 
         /// <summary>
@@ -45,26 +92,47 @@ namespace JiumiTool2.ViewModels
         private void ExecuteMonitor()
         {
             DownloadEnable = true;
+            if (BeginMonitor == true)
+            {
+                _httpsProxyService.Start();
+            }
+            else
+            {
+                _httpsProxyService.Stop();
+            }
         }
 
         /// <summary>
         /// 进行下载
         /// </summary>
         [RelayCommand]
-        private void ExecuteDownload()
+        private async Task ExecuteDownload()
         {
             if (BeginMonitor == true)
             {
-                MessageBox messageBox = new MessageBox();
-                
+                MessageBox messageBox = new MessageBox
+                {
+                    Title = "提示",
+                    Content = "停止监听再进行下载",
+                    CloseButtonText = "确认"
+                };
+                await messageBox.ShowDialogAsync();
+
+                return;
             }
+
+            _videoDownloadDialog.Title = "下载视频ing";
+            _videoDownloadDialog.PrimaryButtonText = "确认";
+            _videoDownloadDialog.CloseButtonText = "取消";
+
+            await _contentDialogService.ShowAsync(_videoDownloadDialog, default);
         }
 
         /// <summary>
         /// 设置
         /// </summary>
         [RelayCommand]
-        private async void PathSetting()
+        private async Task PathSetting()
         {
             _videoConfigDialog.Title = "下载路径配置";
             _videoConfigDialog.PrimaryButtonText = "确认";

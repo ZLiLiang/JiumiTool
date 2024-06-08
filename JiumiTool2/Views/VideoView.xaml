@@ -77,8 +77,8 @@
                                     <ui:GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Image
-                                                MaxWidth="70"
-                                                MaxHeight="70"
+                                                MaxWidth="120"
+                                                MaxHeight="120"
                                                 Source="{Binding ImageData}"
                                                 Stretch="UniformToFill" />
                                         </DataTemplate>
@@ -88,6 +88,7 @@
                                     <ui:GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <ui:TextBlock
+                                                FontSize="14"
                                                 Text="{Binding Description}"
                                                 TextTrimming="CharacterEllipsis"
                                                 ToolTip="{Binding Description}" />
@@ -102,10 +103,17 @@
                                     Width="{Binding ElementName=column4, Path=ActualWidth}"
                                     DisplayMemberBinding="{Binding Size}"
                                     Header="大小(M)" />
-                                <ui:GridViewColumn
-                                    Width="{Binding ElementName=column5, Path=ActualWidth}"
-                                    DisplayMemberBinding="{Binding Uploader}"
-                                    Header="作者" />
+                                <ui:GridViewColumn Width="{Binding ElementName=column5, Path=ActualWidth}" Header="作者">
+                                    <ui:GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ui:TextBlock
+                                                FontSize="14"
+                                                Text="{Binding Uploader}"
+                                                TextTrimming="CharacterEllipsis"
+                                                ToolTip="{Binding Uploader}" />
+                                        </DataTemplate>
+                                    </ui:GridViewColumn.CellTemplate>
+                                </ui:GridViewColumn>
                             </ui:GridView>
                         </ui:ListView.View>
                     </ui:ListView>
