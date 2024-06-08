@@ -1,8 +1,6 @@
 ﻿using System.IO;
-using System.Windows.Media;
 using JiumiTool2.IServices;
 using Microsoft.Win32;
-using Wpf.Ui;
 using Wpf.Ui.Controls;
 
 namespace JiumiTool2.Views
@@ -29,7 +27,7 @@ namespace JiumiTool2.Views
                 {
                     Title = "错误",
                     Content = "路径不存在！",
-                    CloseButtonText="确认"
+                    CloseButtonText = "确认"
                 };
                 await messageBox.ShowDialogAsync();
                 return;
