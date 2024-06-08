@@ -11,6 +11,7 @@ using JiumiTool2.Extensions;
 using JiumiTool2.IServices;
 using JiumiTool2.Models;
 using JiumiTool2.Views;
+using Org.BouncyCastle.Cms;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
 
@@ -55,34 +56,7 @@ namespace JiumiTool2.ViewModels
             _httpsProxyService = httpsProxyService;
             _downloadService = downloadService;
 
-            WeakReferenceMessenger.Default.Register<VideoViewModel, InjectionResult, string>(this, "injectionResult", (recipient, message) =>
-            {
-                var isContain = recipient.VideoItems.Any(video => video.Url.Split("&token=")[0].Equals(message.Url.Split("&token=")[0]));
-                if (isContain == true) return;
-
-                _dispatcher.InvokeAsync(async () =>
-                {
-                    using MemoryStream stream = new MemoryStream(await _downloadService.DownloadImage(message.ThumbUrl));
-                    var image = new BitmapImage();
-                    image.BeginInit();
-                    // 在加载完成后释放原始流
-                    image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.StreamSource = stream;
-                    image.EndInit();
-
-                    var video = new Video
-                    {
-                        ImageData = image,
-                        Description = message.Description,
-                        VideoPlayLength = message.VideoPlayLength,
-                        Size = message.Size / 1024 / 1024,
-                        Uploader = message.Uploader,
-                        Url = message.Url,
-                        DecryptionArray = new Rng(message.Decodekey).GetDecryptionArray()
-                    };
-                    recipient.VideoItems.Add(video);
-                });
-            });
+            WeakReferenceMessenger.Default.Register<VideoViewModel, InjectionResult, string>(this, "injectionResult", MessageHandler);
         }
 
         /// <summary>
@@ -163,5 +137,43 @@ namespace JiumiTool2.ViewModels
             var actualHeight = messageBorder.ActualHeight;
             messageListBox.Height = actualHeight - 2;
         }
+
+        #region 私有方法
+
+        /// <summary>
+        /// 处理发过来的信息
+        /// </summary>
+        /// <param name="recipient"></param>
+        /// <param name="message"></param>
+        private void MessageHandler(VideoViewModel recipient, InjectionResult message)
+        {
+            var isContain = recipient.VideoItems.Any(video => video.Url.Split("&token=")[0].Equals(message.Url.Split("&token=")[0]));
+            if (isContain == true) return;
+
+            _dispatcher.InvokeAsync(async () =>
+            {
+                using MemoryStream stream = new MemoryStream(await _downloadService.DownloadImage(message.ThumbUrl));
+                var image = new BitmapImage();
+                image.BeginInit();
+                // 在加载完成后释放原始流
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.StreamSource = stream;
+                image.EndInit();
+
+                var video = new Video
+                {
+                    ImageData = image,
+                    Description = message.Description,
+                    VideoPlayLength = message.VideoPlayLength,
+                    Size = message.Size / 1024 / 1024,
+                    Uploader = message.Uploader,
+                    Url = message.Url,
+                    DecryptionArray = new Rng(message.Decodekey).GetDecryptionArray()
+                };
+                recipient.VideoItems.Add(video);
+            });
+        }
+
+        #endregion
     }
 }
