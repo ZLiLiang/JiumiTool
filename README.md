@@ -11,7 +11,6 @@
 ---
 
 ## :stuck_out_tongue_winking_eye: 视频页面
+![文件页面](/Image/VideoView.jpg "视频页面")
 
 ---
-
-## :sunglasses: 图片页面
