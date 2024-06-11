@@ -20,7 +20,7 @@ namespace JiumiTool2.Services
 
         public HttpsProxyService()
         {
-            _explicitProxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 8000, true);
+            _explicitProxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 9743, true);
             _proxyServer = new ProxyServer();
             //使用Windows证书生成引擎
             _proxyServer.CertificateManager.CertificateEngine = CertificateEngine.DefaultWindows;
@@ -50,10 +50,11 @@ namespace JiumiTool2.Services
             _proxyServer.BeforeRequest -= OnBeforeRequest;
             _proxyServer.BeforeResponse -= OnBeforeResponse;
 
-            //停止代理
-            _proxyServer.Stop();
+            _proxyServer.RemoveEndPoint(_explicitProxyEndPoint);
             //禁止系统代理
             _proxyServer.DisableSystemHttpsProxy();
+            //停止代理
+            _proxyServer.Stop();
         }
 
         #region 资源释放
@@ -102,7 +103,7 @@ namespace JiumiTool2.Services
                 //请求类型
                 var requestType = e.HttpClient.Request.Method;
                 //判断请求地址，获取注入拿到的结果
-                if (requestUri.Contains("http://127.0.0.1:8000/") && requestType.Equals("POST"))
+                if (requestUri.Contains("http://127.0.0.1:9743/") && requestType.Equals("POST"))
                 {
                     var requestBytes = await e.GetRequestBody();
                     var requestString = Encoding.UTF8.GetString(requestBytes);

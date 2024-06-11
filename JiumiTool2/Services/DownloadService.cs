@@ -11,7 +11,8 @@ namespace JiumiTool2.Services
 
         public DownloadService()
         {
-            _httpClient = new();
+            var handler = new HttpClientHandler { UseProxy = false };
+            _httpClient = new(handler);
         }
 
         public async Task<byte[]> DownloadImage(string url)
@@ -149,7 +150,7 @@ namespace JiumiTool2.Services
                 }
 
                 // 更新进度条
-                progress.Report((downloadedSize / totalSize) * 100);
+                progress.Report((((double)downloadedSize / (double)totalSize) * 100));
             }
 
             if (downloadedSize == totalSize)

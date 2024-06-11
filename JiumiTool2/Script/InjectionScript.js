@@ -1,5 +1,5 @@
 setTimeout(() => {
-    let receiver_url = "http://127.0.0.1:8000";
+    let receiver_url = "http://127.0.0.1:9743";
 
     function send_response_if_is_video(response) {
         if (response == undefined) return;

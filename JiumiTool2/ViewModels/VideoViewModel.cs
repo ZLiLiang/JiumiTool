@@ -21,6 +21,7 @@ namespace JiumiTool2.ViewModels
     {
         private readonly IContentDialogService _contentDialogService;
         private readonly IHttpsProxyService _httpsProxyService;
+        private readonly IAppsettingsService _appsettingsService;
         private readonly IDownloadService _downloadService;
         private readonly VideoConfigDialog _videoConfigDialog;
         private readonly VideoDownloadDialog _videoDownloadDialog;
@@ -36,7 +37,7 @@ namespace JiumiTool2.ViewModels
         /// 启用下载按钮
         /// </summary>
         [ObservableProperty]
-        private bool _downloadEnable = true;
+        private bool _downloadEnable = false;
 
         /// <summary>
         /// 视频列表
@@ -44,11 +45,17 @@ namespace JiumiTool2.ViewModels
         [ObservableProperty]
         private ObservableCollection<Video> _videoItems = new();
 
+        /// <summary>
+        /// 被选择视频列表
+        /// </summary>
+        private List<Video> _selectedItems = new();
+
         public VideoViewModel(IContentDialogService contentDialogService,
                               VideoConfigDialog videoConfigDialog,
                               VideoDownloadDialog videoDownloadDialog,
                               IHttpsProxyService httpsProxyService,
-                              IDownloadService downloadService)
+                              IDownloadService downloadService,
+                              IAppsettingsService appsettingsService)
         {
             _contentDialogService = contentDialogService;
             _videoConfigDialog = videoConfigDialog;
@@ -57,6 +64,7 @@ namespace JiumiTool2.ViewModels
             _downloadService = downloadService;
 
             WeakReferenceMessenger.Default.Register<VideoViewModel, InjectionResult, string>(this, "injectionResult", MessageHandler);
+            _appsettingsService = appsettingsService;
         }
 
         /// <summary>
@@ -95,9 +103,35 @@ namespace JiumiTool2.ViewModels
                 return;
             }
 
+            var path = _appsettingsService.GetAppsettings().VideoOptions.DownloadPath;
+            if (Directory.Exists(path) == false)
+            {
+                MessageBox messageBox = new MessageBox
+                {
+                    Title = "错误",
+                    Content = "请设置下载路径，再进行下载",
+                    CloseButtonText = "确认"
+                };
+                await messageBox.ShowDialogAsync();
+                return;
+            }
+
+            if (_selectedItems.Count == 0)
+            {
+                MessageBox messageBox = new MessageBox
+                {
+                    Title = "警告",
+                    Content = "请选择需要下载的视频",
+                    CloseButtonText = "确认"
+                };
+                await messageBox.ShowDialogAsync();
+                return;
+            }
+
+            WeakReferenceMessenger.Default.Send<IList<Video>, string>(_selectedItems, "DownloadVideo");
+
             _videoDownloadDialog.Title = "下载视频ing";
-            _videoDownloadDialog.PrimaryButtonText = "确认";
-            _videoDownloadDialog.CloseButtonText = "取消";
+            _videoDownloadDialog.CloseButtonText = "确认";
 
             await _contentDialogService.ShowAsync(_videoDownloadDialog, default);
         }
@@ -136,6 +170,27 @@ namespace JiumiTool2.ViewModels
             messageBorder.UpdateLayout();
             var actualHeight = messageBorder.ActualHeight;
             messageListBox.Height = actualHeight - 2;
+        }
+
+        /// <summary>
+        /// ListView选择事件
+        /// </summary>
+        /// <param name="e"></param>
+        [RelayCommand]
+        private void SelectionChanged(SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0)
+            {
+                var video = e.AddedItems[0] as Video;
+                var isExist = _selectedItems.Exists(model => model.Url.Equals(video.Url));
+                if (isExist == false)
+                    _selectedItems.Add(video);
+            }
+            else if (e.RemovedItems.Count > 0)
+            {
+                var video = e.RemovedItems[0] as Video;
+                _selectedItems.RemoveAll(model => model.Url.Equals(video.Url));
+            }
         }
 
         #region 私有方法

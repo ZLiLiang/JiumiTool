@@ -17,6 +17,7 @@ namespace JiumiTool2.Views
             InitializeComponent();
 
             _appsettingsService = appsettingsService;
+            PathTextBox.Text = appsettingsService.GetAppsettings().VideoOptions.DownloadPath;
         }
 
         protected override async void OnButtonClick(ContentDialogButton button)

@@ -45,8 +45,8 @@ namespace JiumiTool2
                 services.AddSingleton<IMatchRegexService, MatchRegexService>();
                 services.AddSingleton<IFileService, FileService>();
                 services.AddSingleton<IFolderService, FolderService>();
-                services.AddSingleton<IHttpsProxyService, HttpsProxyService>();
                 services.AddSingleton<IDownloadService, DownloadService>();
+                services.AddSingleton<IHttpsProxyService, HttpsProxyService>();
 
                 // Service containing navigation, same as INavigationWindow... but without window
                 services.AddSingleton<INavigationService, NavigationService>();

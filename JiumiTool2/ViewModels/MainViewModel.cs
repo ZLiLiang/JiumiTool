@@ -68,12 +68,12 @@ namespace JiumiTool2.ViewModels
                     Icon = new SymbolIcon { Symbol = SymbolRegular.Video24 },
                     TargetPageType = typeof(VideoView)
                 },
-                new NavigationViewItem()
-                {
-                    Content = "图片转换",
-                    Icon = new SymbolIcon { Symbol = SymbolRegular.Image24 },
-                    TargetPageType = typeof(VideoView)
-                }
+                //new NavigationViewItem()
+                //{
+                //    Content = "图片转换",
+                //    Icon = new SymbolIcon { Symbol = SymbolRegular.Image24 },
+                //    TargetPageType = typeof(VideoView)
+                //}
             ];
 
 
