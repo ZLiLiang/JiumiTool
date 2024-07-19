@@ -75,7 +75,7 @@
             this.rPLayoutPanel.ColumnCount = 3;
             this.rPLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15.44118F));
             this.rPLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 84.55882F));
-            this.rPLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 125F));
+            this.rPLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 128F));
             this.rPLayoutPanel.Controls.Add(this.tipL, 0, 0);
             this.rPLayoutPanel.Controls.Add(this.pathTB, 1, 0);
             this.rPLayoutPanel.Controls.Add(this.selectResourceBtn, 2, 0);
@@ -104,7 +104,7 @@
             this.tipL.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tipL.Location = new System.Drawing.Point(3, 0);
             this.tipL.Name = "tipL";
-            this.tipL.Size = new System.Drawing.Size(95, 30);
+            this.tipL.Size = new System.Drawing.Size(94, 30);
             this.tipL.TabIndex = 1;
             this.tipL.Text = "文件位置:";
             this.tipL.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -113,9 +113,9 @@
             // 
             this.pathTB.AllowDrop = true;
             this.pathTB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pathTB.Location = new System.Drawing.Point(104, 3);
+            this.pathTB.Location = new System.Drawing.Point(103, 3);
             this.pathTB.Name = "pathTB";
-            this.pathTB.Size = new System.Drawing.Size(549, 25);
+            this.pathTB.Size = new System.Drawing.Size(547, 25);
             this.pathTB.TabIndex = 3;
             this.pathTB.DragDrop += new System.Windows.Forms.DragEventHandler(this.pathTB_DragDrop);
             this.pathTB.DragEnter += new System.Windows.Forms.DragEventHandler(this.pathTB_DragEnter);
@@ -125,9 +125,9 @@
             // selectResourceBtn
             // 
             this.selectResourceBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.selectResourceBtn.Location = new System.Drawing.Point(659, 3);
+            this.selectResourceBtn.Location = new System.Drawing.Point(656, 3);
             this.selectResourceBtn.Name = "selectResourceBtn";
-            this.selectResourceBtn.Size = new System.Drawing.Size(120, 24);
+            this.selectResourceBtn.Size = new System.Drawing.Size(123, 24);
             this.selectResourceBtn.TabIndex = 2;
             this.selectResourceBtn.Text = "选择文件";
             this.selectResourceBtn.UseVisualStyleBackColor = true;
@@ -142,15 +142,15 @@
             this.msgLB.Location = new System.Drawing.Point(3, 33);
             this.msgLB.Name = "msgLB";
             this.rPLayoutPanel.SetRowSpan(this.msgLB, 6);
-            this.msgLB.Size = new System.Drawing.Size(650, 389);
+            this.msgLB.Size = new System.Drawing.Size(647, 389);
             this.msgLB.TabIndex = 3;
             // 
             // clearBtn
             // 
             this.clearBtn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.clearBtn.Location = new System.Drawing.Point(659, 193);
+            this.clearBtn.Location = new System.Drawing.Point(656, 193);
             this.clearBtn.Name = "clearBtn";
-            this.clearBtn.Size = new System.Drawing.Size(120, 24);
+            this.clearBtn.Size = new System.Drawing.Size(123, 24);
             this.clearBtn.TabIndex = 6;
             this.clearBtn.Text = "清除";
             this.clearBtn.UseVisualStyleBackColor = true;
@@ -160,9 +160,9 @@
             // 
             this.changeBtn.Dock = System.Windows.Forms.DockStyle.Fill;
             this.changeBtn.Enabled = false;
-            this.changeBtn.Location = new System.Drawing.Point(659, 163);
+            this.changeBtn.Location = new System.Drawing.Point(656, 163);
             this.changeBtn.Name = "changeBtn";
-            this.changeBtn.Size = new System.Drawing.Size(120, 24);
+            this.changeBtn.Size = new System.Drawing.Size(123, 24);
             this.changeBtn.TabIndex = 5;
             this.changeBtn.Text = "修改";
             this.changeBtn.UseVisualStyleBackColor = true;
@@ -172,10 +172,10 @@
             // 
             this.isBackUp.AutoSize = true;
             this.isBackUp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.isBackUp.Location = new System.Drawing.Point(663, 133);
+            this.isBackUp.Location = new System.Drawing.Point(660, 133);
             this.isBackUp.Margin = new System.Windows.Forms.Padding(7, 3, 3, 3);
             this.isBackUp.Name = "isBackUp";
-            this.isBackUp.Size = new System.Drawing.Size(116, 24);
+            this.isBackUp.Size = new System.Drawing.Size(119, 24);
             this.isBackUp.TabIndex = 4;
             this.isBackUp.Text = "对原文件备份";
             this.isBackUp.UseVisualStyleBackColor = true;
@@ -184,10 +184,10 @@
             // 
             this.folderMode.AutoSize = true;
             this.folderMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.folderMode.Location = new System.Drawing.Point(663, 33);
+            this.folderMode.Location = new System.Drawing.Point(660, 33);
             this.folderMode.Margin = new System.Windows.Forms.Padding(7, 3, 3, 3);
             this.folderMode.Name = "folderMode";
-            this.folderMode.Size = new System.Drawing.Size(116, 24);
+            this.folderMode.Size = new System.Drawing.Size(119, 24);
             this.folderMode.TabIndex = 7;
             this.folderMode.Text = "文件夹模式";
             this.folderMode.UseVisualStyleBackColor = true;
