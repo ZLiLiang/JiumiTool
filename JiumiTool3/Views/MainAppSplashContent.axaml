@@ -1,0 +1,30 @@
+<UserControl
+    x:Class="JiumiTool3.Views.MainAppSplashContent"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Panel Background="Black">
+        <StackPanel VerticalAlignment="Center" Spacing="10">
+            <Image
+                Name="image"
+                Width="250"
+                Height="250" />
+
+            <ProgressBar
+                Name="progressBar"
+                MaxWidth="200"
+                Margin="0" />
+
+            <TextBlock
+                Name="loadingText"
+                HorizontalAlignment="Center"
+                FontSize="20"
+                Foreground="White"
+                Text="Loading..." />
+        </StackPanel>
+    </Panel>
+</UserControl>
