@@ -1,7 +1,10 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
 using JiumiTool3.Extensions;
+using JiumiTool3.ViewModels;
 using JiumiTool3.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -19,6 +22,13 @@ public partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
+        // Default logic doesn't auto detect windows theme anymore in designer
+        // to stop light mode, force here
+        if (!Design.IsDesignMode)
+        {
+            RequestedThemeVariant = ThemeVariant.Dark;
+        }
+
         LogSetup();
     }
 
@@ -26,11 +36,11 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow();
+            desktop.MainWindow = App.Services.GetRequiredService<MainWindow>();
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new MainView();
+            singleViewPlatform.MainView = App.Services.GetRequiredService<MainView>();
         }
 
         Log.Information("OK");
@@ -42,6 +52,8 @@ public partial class App : Application
     {
         // 注册应用程序运行所需的所有服务
         var collection = new ServiceCollection();
+
+        collection.AddViewAndModelServices();
         collection.AddCommonServices();
 
         // 从 collection 提供的 IServiceCollection 中创建包含服务的 ServiceProvider
