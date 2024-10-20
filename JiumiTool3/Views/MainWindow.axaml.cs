@@ -15,18 +15,12 @@ public partial class MainWindow : AppWindow
         InitializeComponent();
 
         DataContext = App.Services.GetRequiredService<MainViewModel>();
-
-        SplashScreen = new MainAppSplashScreen(this);
+        SplashScreen = new MainAppSplashScreen();
     }
 }
 
 internal class MainAppSplashScreen : IApplicationSplashScreen
 {
-    public MainAppSplashScreen(MainWindow owner)
-    {
-        _owner = owner;
-    }
-
     public string AppName { get; }
     public IImage AppIcon { get; }
     public object SplashScreenContent => new MainAppSplashContent();
@@ -41,6 +35,4 @@ internal class MainAppSplashScreen : IApplicationSplashScreen
 
         return Task.Run(InitApp, cancellationToken);
     }
-
-    private MainWindow _owner;
 }

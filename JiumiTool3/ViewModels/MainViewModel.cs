@@ -1,6 +1,14 @@
-﻿namespace JiumiTool3.ViewModels;
+﻿using FluentAvalonia.UI.Controls;
+using JiumiTool3.Services;
+
+namespace JiumiTool3.ViewModels;
 
 public class MainViewModel : ViewModelBase
 {
-    public string Greeting => "Welcome to Avalonia!";
+    public INavigationPageFactory NavigationFactory { get; init; }
+
+    public MainViewModel(INavigationPageFactory navigationFactory)
+    {
+        NavigationFactory = navigationFactory;
+    }
 }
