@@ -18,12 +18,14 @@
             <ProgressBar
                 Name="progressBar"
                 MaxWidth="200"
-                Margin="0" />
+                Margin="0"
+                Foreground="BurlyWood" />
 
             <TextBlock
                 Name="loadingText"
                 HorizontalAlignment="Center"
                 FontSize="20"
+                Foreground="White"
                 Text="Loading..." />
         </StackPanel>
     </Panel>
