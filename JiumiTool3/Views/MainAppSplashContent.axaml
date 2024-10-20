@@ -6,8 +6,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    Background="#202020"
     mc:Ignorable="d">
-    <Panel Background="Black">
+    <Panel>
         <StackPanel VerticalAlignment="Center" Spacing="10">
             <Image
                 Name="image"
@@ -23,7 +24,6 @@
                 Name="loadingText"
                 HorizontalAlignment="Center"
                 FontSize="20"
-                Foreground="White"
                 Text="Loading..." />
         </StackPanel>
     </Panel>
