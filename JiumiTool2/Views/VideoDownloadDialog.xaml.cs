@@ -76,8 +76,20 @@ namespace JiumiTool2.Views
             Grid.SetRow(textBlock, 0);
             Grid.SetRow(progressBar, 1);
 
-            var outputPath = $"{Path.Combine(_appsettingsService.GetAppsettings().VideoOptions.DownloadPath, Regex.Replace(video.Description, @"[<>:""/\\|?*]", " ").Trim())}.mp4";
-            _downloadService.DownloadVideo(video.Url, outputPath, video.DecryptionArray, progress);
+            var outputPath = $"{Path.Combine(_appsettingsService.GetAppsettings().VideoOptions.DownloadPath, Regex.Replace(video.Description, @"[<>:""/\\|?*\x00-\x1f]", " ").Trim())}.mp4";
+            _downloadService.DownloadVideo(video.Url, outputPath, video.DecryptionArray, progress).ContinueWith(task =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var messageBox = new Wpf.Ui.Controls.MessageBox
+                    {
+                        Title = "下载完成",
+                        Content = $"视频《{video.Description}》下载完成，保存路径：{outputPath}",
+                        CloseButtonText = "确认"
+                    };
+                    messageBox.ShowDialogAsync();
+                });
+            });
 
             return grid;
         }
