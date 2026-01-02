@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using CommunityToolkit.Mvvm.Messaging;
@@ -75,7 +76,7 @@ namespace JiumiTool2.Views
             Grid.SetRow(textBlock, 0);
             Grid.SetRow(progressBar, 1);
 
-            var outputPath = $"{Path.Combine(_appsettingsService.GetAppsettings().VideoOptions.DownloadPath, video.Description)}.mp4";
+            var outputPath = $"{Path.Combine(_appsettingsService.GetAppsettings().VideoOptions.DownloadPath, Regex.Replace(video.Description, @"[<>:""/\\|?*]", " ").Trim())}.mp4";
             _downloadService.DownloadVideo(video.Url, outputPath, video.DecryptionArray, progress);
 
             return grid;
